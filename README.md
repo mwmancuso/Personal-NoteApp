@@ -32,15 +32,51 @@ Even more, all nodes and notebooks will be sharable. All shares will be specific
 
 All of that seems like it could get very messy very quickly. That is most likely an accurate assumption. However, the concern of this project is to help people learn; not to make them more confused. All of the messy globs of information will be handled on the server. The information that the user sees should be sorted, streamlined, useful and relevant. Computer learning will have to be implemented to find the best possible combination of nodes to display to the user at certain times. Without proper mechanisms, nodes could be displayed connected to other nodes that are in turn connected to themselves. It is of utmost important to allow the user to sort and filter nodes as often and as freely as they desire. It is the job of this project to manage those nodes and display only what is relevant to the learner.
 
-##Background
+Background
+----------
 This project idea came to me while trying to study for history. This is why many of the examples in this documentation involve history. The project will not only support history, however, it is instead intended to support nearly every subject, and extend into everyday life. Back on point, I could not for the life of me figure out the best way to study for history. I am an analytical person, but none of the current methods of studying, besides simply reading, seemed to help me. My history teacher made us all fill out vocabulary index cards, which do not help me at all. I think it is important to have all of my information connected and for all of it to be seen many times to commit it to memory.
 
 Though this idea began to help myself, I soon realized that nearly every learner could benefit from such an app. Analytical people would have a new tool to help them better analyze and make connections. Those who are not already analytical could benefit by becoming more analytical after being shown how to make connections and continue to make connections. Talking with other people, I also realized that taking notes on a computer is not the most desired or even possible method for some people. I intend to help them by creating printable handouts, and allowing information they fill out on the handouts available for manual input or scanning in using handwriting recognition. To keep me on the right path for this project, I have decided to attempt pursuing it for my graduation project.
 
-##Definition of Terms
+I have not yet decided how this project will be licensed, distributed or financed.
 
-##Workflow
+Definition of Terms
+-------------------
+These terms are subject to aliases for marketing or easier understanding in the project. Those aliases will be addressed here, but the underlying terminology will remain.
 
-##Interface
+###User
+Starting at the very top, the user is the person with an account on this service. Their credentials will be stored in a database, which will be accessible via a login page, an account page, a mobile phone application, and linked to anything the user authors. The user is just like a user on any other service.
 
-##Project Versioning
+###Notebook
+A notebook will be a container for all nodes and information pertaining to a specific topic. Notebooks will may be owned only by a single user. They may be shared either wholly or partially with other users. Only the owner will be allowed to make changes to the notebook or the information in it.<sup>1</sup> However, nodes from a notebook may be transferred via dragging-and-dropping or other methods of transferring. Transferred nodes may be edited by either party, or synced if wished.<sup>1</sup>
+
+Notebooks are intended to be overall containers of information. They are not meant to be many notebooks per user. Organization is rather intended to be pursued inside of the notebook. This may bring up the point of the need for notebooks.
+
+<sup>1</sup>Information sharing is not solid. A Google Docs approach may be taken instead of the single-user sharing approach. This is subject to change.
+
+####Notebook Templates
+
+Notebooks are intended to be specific to a certain topic. For example, every class a user takes in school could be a new notebook. Let us assume a five-period schedule. The student has, in order: History, English, Chemistry, Band and Photography. Notebooks will have categories for use depending on the subject. The notebook a user creates for History would be tailored to history, and would most likely use Wikipedia and other such sources as a backend. It would also have a timeline, maps, and other modules used for history. Modules are not subject-specific, there will simply be a template depending on the notebook-type chosen. The user's English notebook, on the other hand, would have a template tailored to English. The modules used as backends would most likely be Goodreads, IMDB, and other related services. Another module for vocabulary would be available with possible integration with Quizlet and related services. A chemistry notebook would have backends for chemical compounds and likely some other science-related modules. The user's Band and Photography notebooks would start out as generic templates on which the user could add modules pertaining to his or her class. Perhaps eventually, templates could be published manually by users or teachers, or automatically created after a large enough user base creates class-specific notebooks.
+
+###Modules
+
+####Backends
+
+###Nodes
+
+####Node Categories
+
+####Node Links
+
+###Print-out
+
+####Scan-in
+
+Workflow
+--------
+
+Interface
+---------
+
+Project Versioning
+------------------

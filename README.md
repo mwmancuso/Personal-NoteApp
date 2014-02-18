@@ -56,15 +56,27 @@ Notebooks are intended to be overall containers of information. They are not mea
 
 ####Notebook Templates
 
-Notebooks are intended to be specific to a certain topic. For example, every class a user takes in school could be a new notebook. Let us assume a five-period schedule. The student has, in order: History, English, Chemistry, Band and Photography. Notebooks will have categories for use depending on the subject. The notebook a user creates for History would be tailored to history, and would most likely use Wikipedia and other such sources as a backend. It would also have a timeline, maps, and other modules used for history. Modules are not subject-specific, there will simply be a template depending on the notebook-type chosen. The user's English notebook, on the other hand, would have a template tailored to English. The modules used as backends would most likely be Goodreads, IMDB, and other related services. Another module for vocabulary would be available with possible integration with Quizlet and related services. A chemistry notebook would have backends for chemical compounds and likely some other science-related modules. The user's Band and Photography notebooks would start out as generic templates on which the user could add modules pertaining to his or her class. Perhaps eventually, templates could be published manually by users or teachers, or automatically created after a large enough user base creates class-specific notebooks.
+Notebooks are intended to be specific to a certain topic. For example, every class a user takes in school could be a new notebook. Let us assume a five-period schedule. The student has, in order: History, English, Chemistry, Band and Photography. Notebooks will have categories for use depending on the subject. The notebook a user creates for History would be tailored to history, and would most likely use Wikipedia and other such sources as a backend. It would also have a timeline, maps, and other modules used for history. Modules are not subject-specific, there will simply be a template depending on the notebook-type chosen. The user's English notebook, on the other hand, would have a template tailored to English. The modules used as backends would most likely be Goodreads, IMDB, and other related services. Another module for vocabulary would be available with possible integration with Quizlet and related services. A chemistry notebook would have backends for chemical compounds and likely some other science-related modules. The user's Band and Photography notebooks would start out as generic templates on which the user could add modules pertaining to his or her class. Perhaps eventually, templates could be published manually by users or teachers, or automatically created after a large enough user base creates class-specific notebooks. This project is intended to launch with the following notebook templates:
+
+ * History
+ * English
+ * Sciences (biology, chemistry, physics, etc.)
+ * Math
+ * (Maybe) Programming
 
 ###Modules
 
-####Backends
+####Module Backends
+
+####Module API and Directory
+
+###Containers
 
 ###Nodes
 
 ####Node Categories
+
+####Node Backends
 
 ####Node Links
 
@@ -72,11 +84,11 @@ Notebooks are intended to be specific to a certain topic. For example, every cla
 
 ####Scan-in
 
-Workflow
---------
-
 Interface
 ---------
+
+Development Workflow
+--------------------
 
 Project Versioning
 ------------------

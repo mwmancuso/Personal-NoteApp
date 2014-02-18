@@ -66,9 +66,81 @@ Notebooks are intended to be specific to a certain topic. For example, every cla
 
 ###Modules
 
+Modules are dockable panels that are deeply integrated with nodes. Modules may be notebook-dependent or not. Modules allow a deeper learning experience and will help with all types of learning. They will allow learners to visualize, organize, hear and learn the information. Modules are the basis for notebook templates, as templates are simply be different layouts of modules. All modules are available for use in any notebook, however it is unlikely that a chemical compound viewer will be needed in a History class or a 3D shape viewer will be needed in an English class. Certain modules may be dockable outside of individual notebooks, for example a to-do list or calendar. Modules both make use of the APIs of other services and also will be extensible via APIs of this project. Below is a list of modules that are to be developed.<sup>1</sup>
+
+ * Maps (both historic and current)
+ * Timeline
+ * Vocab list
+ * Vocab tests/games
+ * Chemical viewer
+ * Researcher
+ * Research tracker
+ * Animations/video player
+ * Simulations
+ * Image viewer/editor
+ * Audio viewer/editor
+ * Programming tester
+ * Presentation helper
+ * Equation builder/solver
+ * Advanced calculator
+ * 2D/3D shape viewer and manipulator
+ * Document editor
+ * File manager
+ * Share dialog
+ * Audio/video recorder
+ * Text to speech reader
+ * Notebook information
+ * Node information
+ * Assignment manager
+ * To-do list
+ * Calendar
+ * Weather
+
+All of these modules are not meant to be mainly web-based. Mobile modules should also be developed with a specialized interface.
+
+<sup>1</sup>Note that this is not a definite list. It is subject to additions, removals and changes. Complete list of modules will not be available in v1.0.0.
+
 ####Module Backends
 
+Backends and services must be used for many of the modules. Some modules will be developed in-house, but many will be integrations with existing services. These backends may be available via Web APIs, front-end integrations, or SDKs on in-house servers. Financing for some backends is a huge importance for this project. Many collaborations will most likely have to be made for custom APIs. A list of possible backends:
+
+ * Wikipedia
+ * Google
+ * Google Maps
+ * Open Street Maps
+ * Quizlet
+ * Chemspider
+ * NCBI
+ * EasyBib
+ * Evernote
+ * Diigo
+ * YouTube
+ * McGraw Animations
+ * ExploreLearning
+ * Pixlr
+ * Soundcloud
+ * Codecademy
+ * Github
+ * Prezi
+ * Glogster
+ * Google Drive
+ * Wolfram Alpha
+ * Some formula editor (many available)
+ * Sketchfab
+ * Google Calendar
+ * Weather.com
+ * OpenWeatherMap
+ * Forecast.io
+
 ####Module API and Directory
+
+Note: API stands for Application Programming Interface. APIs allow different services to interact with each other, in the simplest sense.
+
+APIs drive the Web today. This project will have both external and internal APIs. External APIs will be available so that other projects can integrate data from this project. Internal APIs will be available for developers to build modules for this project and integrate them with users' data. Also, an internal API will be available for those learning programming to toy with this project itself in their learning. Or even just a techy student who gets lazy and puts their computer to work for them.
+
+A directory will be available for users to add custom modules or find outside services that can integrate with this project. All of the general security measures will be taken to ensure data safety and control.
+
+An API is not planned for development until during or after the beta phase. The API will be a project of its own. It may be developed in tandem with the mobile applications.
 
 ###Containers
 
@@ -79,6 +151,10 @@ Notebooks are intended to be specific to a certain topic. For example, every cla
 ####Node Backends
 
 ####Node Links
+
+###Presentations
+
+####Presentation builder
 
 ###Print-out
 

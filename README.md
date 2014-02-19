@@ -56,7 +56,7 @@ Notebooks are intended to be overall containers of information. They are not mea
 
 ####Notebook Templates
 
-Notebooks are intended to be specific to a certain topic. For example, every class a user takes in school could be a new notebook. Let us assume a five-period schedule. The student has, in order: History, English, Chemistry, Band and Photography. Notebooks will have categories for use depending on the subject. The notebook a user creates for History would be tailored to history, and would most likely use Wikipedia and other such sources as a backend. It would also have a timeline, maps, and other modules used for history. Modules are not subject-specific, there will simply be a template depending on the notebook-type chosen. The user's English notebook, on the other hand, would have a template tailored to English. The modules used as backends would most likely be Goodreads, IMDB, and other related services. Another module for vocabulary would be available with possible integration with Quizlet and related services. A chemistry notebook would have backends for chemical compounds and likely some other science-related modules. The user's Band and Photography notebooks would start out as generic templates on which the user could add modules pertaining to his or her class. Perhaps eventually, templates could be published manually by users or teachers, or automatically created after a large enough user base creates class-specific notebooks. This project is intended to launch with the following notebook templates:
+Notebooks are intended to be specific to a certain topic. For example, every class a user takes in school could be a new notebook. Let us assume a five-period schedule. The student has, in order: History, English, Chemistry, Band and Photography. Notebooks will have categories for use depending on the subject. The notebook a user creates for History would be tailored to history, and would most likely use Wikipedia and other such sources as a backend. It would also have a timeline, maps, and other modules used for history. Modules are not subject-specific, there will simply be a template depending on the notebook-type chosen. The user's English notebook, on the other hand, would have a template tailored to English. The modules backends used would most likely be Goodreads, IMDB, and other related services. Another module for vocabulary would be available with possible integration with Quizlet and related services. A chemistry notebook would have backends for chemical compounds and likely some other science-related modules. The user's Band and Photography notebooks would start out as generic templates on which the user could add modules pertaining to his or her class. Perhaps eventually, templates could be published manually by users or teachers, or automatically created after a large enough user base creates class-specific notebooks. This project is intended to launch with the following notebook templates:
 
  * History
  * English
@@ -106,6 +106,8 @@ Backends and services must be used for many of the modules. Some modules will be
 
  * Wikipedia
  * Google
+ * Goodreads
+ * IMDB
  * Google Maps
  * Open Street Maps
  * Quizlet
@@ -144,12 +146,96 @@ An API is not planned for development until during or after the beta phase. The 
 
 ###Containers
 
+Containers are the next-biggest thing under Notebooks. Notebooks can contain nodes directly, however this will most often not be the case. Instead, containers will typically contain nodes. Containers are simply wrappers for nodes that put them in a more organized fashion. They can be used to sort nodes depending on how they are learned about. Obviously, a subject is not learned all at once. Most subjects are taught in sections. Many classes are taught chapter by chapter from a textbook. Ding ding, perfect use-case for a container. Having a container for each chapter would be an excellent organizational practice. Units are also another candidate for containers.
+
+However, the point of this project is to help learners make connections. Following the dogma of this project, containers are not all-inclusive. Nodes may be shared between containers for better relationship definitions. In a U.S. History class, you may learn about political parties. In your first unit, you may learn about Federalists and Antifederalists. Later on in the course, you will be introduced to even more political parties. Even though the nodes with each political party are contained in a unit or chapter container, you may consider making a new container for political parties. A drag-and-drop interface will allow you to quickly add all of the political parties to their own category. If in every node that was a political party, you wrote "political party," a simple search would allow you to find everything you need. This could also be done automatically if proper computer learning techniques were utilized.
+
+Note that categories may seem a lot like tags in other note-taking applications. In a way, they are, but not completely. In simple terms, tags would be added to nodes to classify them. Categories, adversely, are what nodes are added to. This way, categories must already exist, or be created on the fly, for nodes to be added to them. Though a tag-like interface may be used on nodes, in the end, categories are a better way of organizing the nodes.
+
+Categories are expected to be used for review and establishing connections. Viewing categories by themselves creates a space for a learner to study a particular topic. Using modules, a quiz may be generated using the categories to single in on a topic. If a node is part of multiple categories, and multiple reviews are completed with each of those categories, nodes will be seen time and time again and linked with topics inside a learner's memory. This will also signify more important information. If a node is in more categories, there is a better chance that that node is more important.
+
 ###Nodes
+
+The all-mighty node. Nodes in themselves are quite simple. They contain information. However, the way nodes in this project work is very useful. The structure of a node is broken down into different sections: the title, the information, and the category of the node. Node categories will be addressed in another sub-topic.
+
+The title of the node is just like the title of anything else. It classifies the node and also helps modules and backends get a grip on what your node will be able. Titles in addition to node categories are very important, but that will be explained shortly. The title may also be seasoned with a picture. Pictures other than a main picture will have to fall in a module overflow.
+
+The information for a node is all of the facts, statistics, opinions, and whatever else can be listed about the title. It is like bullets in typical note-taking applications. However, every node entry—bullet—is separable. They may be rearranged and manipulated individually. It is important to create multiple entries for each topic of information. This allows everything to flow more smoothly. For example, a multiple choice quiz may be generated using a node. Let's take this into example:
+
+Node A has three node entries: 1, 2 and 3.
+Node B has four entries: 4, 5, 6 and 7.
+Node C has three entries: 8, 9 and 10.
+
+A multiple choice question is generated, which asks:
+
+```
+Which of the following is true about B?
+A. 1
+B. 3
+C. 5
+D. 9
+```
+
+The correct answer would be C. 5 is the node entry from Node B, so, unless there is overlap, 5 would be the true about Node B. In the long run, computer learning may take guesses at multiple choice entries that may have overlap and either remove those questions or make multiselect answers.
+
+This brings up another point: what about information that isn't very useful on its own? Such as a person's age, birth-place, or things of the sort. Entries that contain this information may be flagged as insignificant. These types of facts are intended to be imported from a node backend, to save valuable research time.
 
 ####Node Categories
 
+Node categories are incredibly important in defining the function and relationships of a node. They also classify which modules and backends will be usable with said node. A node category is a very broad classification of the node title. For example, Mahatma Gandhi is a person. Japan is a geographical place. Harry Potter is a film. The Wrights brothers' flight is an event. A political party is a body of people. Many of these categories are too broad for useful classification. Sub-categories are available to further refine a categorization. Without further ado, a list of preliminary node categories:<sup>1</sup>
+
+* Person
+* Geographical Place
+ * Planet
+ * Continent
+ * Country
+ * Reference (The West, the East, etc.)
+ * State
+ * Province
+ * City
+* Motion Picture
+ * Movie
+ * Other Video Production
+* Text
+ * Novel
+ * Informative Text
+ * Historical Text
+ * Governmental Text (Law)
+* Object
+ * Building
+ * Statue/Sculpture
+ * Artwork
+* Event
+ * Dispute (War)
+ * Session/Meeting
+ * Significant Date
+* Body
+ * Governmental Body
+ * Organization
+* Scientific Item
+ * Chemical Compound
+ * Theory
+ * Method
+ * Data
+ * Anatomical Feature
+ * Classification
+ * ...
+* Mathematical Item
+ * Equation
+ * Theory
+ * Postulate
+ * ...
+
+As the user base of this project grows, categories will be able to be automatically defined via a crowd-sourcing method.
+
+<sup>1</sup>Note that this list is in need of major revisions and is subject to significant change. Much still needs to be added. Modules may be able to add custom categories to the list.
+
 ####Node Backends
 
+Automatic definition of known statistical facts is implemented via node backends. The node backends used will depend on the node category chosen. Upon creating a node and defining a category and title, the service will use a backend to research the title. Relevant information will be presented near the node itself and may be added with a simple click. Insignificant information will automatically be defined and marked as insignificant, though that flag may be removed by the user if deemed inaccurate. Node backends will most likely be deeply integrated with module backends. Modules may be launched with relevant information about the specific node in addition to the pop-up info. As this project expands, the project itself may be used as a backend, pulling information from loads of other users. If all information is found independently of each other, it is more than likely accurate. Algorithms and software will be needed to verify this, however, and a voting system will be implemented.
+
+All modules and backends used either automatically or manually will be linked to the node it was used with. This will allow nodes to become containers for deeper information. A Wikipedia article, for example, may be linked to a specific node. Or a picture library may help get a visual feel for the information. A video may clarify some of the information. Links and references may be added, as well, for a research project. This makes every node more extensible. Visual indicators may be used on nodes to clarify which modules are linked to it before selecting the node.
+ 
 ####Node Links
 
 ###Presentations

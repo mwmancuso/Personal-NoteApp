@@ -158,7 +158,7 @@ Categories are expected to be used for review and establishing connections. View
 
 The all-mighty node. Nodes in themselves are quite simple. They contain information. However, the way nodes in this project work is very useful. The structure of a node is broken down into different sections: the title, the information, and the category of the node. Node categories will be addressed in another sub-topic.
 
-The title of the node is just like the title of anything else. It classifies the node and also helps modules and backends get a grip on what your node will be able. Titles in addition to node categories are very important, but that will be explained shortly. The title may also be seasoned with a picture. Pictures other than a main picture will have to fall in a module overflow.
+The title of the node is just like the title of anything else. It classifies the node and also helps modules and backends get a grip on what your node will be able. Titles in addition to node categories are very important, but that will be explained shortly. The title may also be seasoned with a picture. Pictures other than a main picture will have to fall in a module overflow. Nodes may also be color-coded for better distinction on modules like maps and a timeline.
 
 The information for a node is all of the facts, statistics, opinions, and whatever else can be listed about the title. It is like bullets in typical note-taking applications. However, every node entry—bullet—is separable. They may be rearranged and manipulated individually. It is important to create multiple entries for each topic of information. This allows everything to flow more smoothly. For example, a multiple choice quiz may be generated using a node. Let's take this into example:
 
@@ -238,13 +238,33 @@ All modules and backends used either automatically or manually will be linked to
  
 ####Node Links
 
+Nodes may not only be linked to modules, but internode connections may be established. These links may be established automatically or manually via a click and drag interface. Users of graphic editing software may be familiar with node connections. However, node links in this project are not one-way. The benefits of node links may not be immediately noticeable. However, once it comes time to review information, node links will become life-savers. Let's say that you are learning about presidents. You find George W. Bush and see that he is a Republican. You need a refresher on the Republican Party. Good news for you, your node for the Republican Party is already floating next to Bush with a line indicating linkage. So you read what you have listed about the party. Then you find yourself wondering what other presidents are Republicans. So you click on the node and find 17 other Republican presidents. You can then see when parties were in office on the timeline, since the parties are color-coded.
+
+Node links are obviously a powerful tool for reviewing information. Node links may be created automatically via backends, however manual creation is required. A good strategy for linking nodes from the start will pay off exponentially in the end. However, like everything else in this project, node-linkage is not a static property. Nodes links can be added, removed, or modified at any time.
+
 ###Presentations
+
+Presentations are an important part of learning and teaching alike. With so much information at hand, this project would be perfect for creating presentations. Different types of presentations may be created. Presentations could be exported or imported to backends, such as Powerpoints, Google Docs, or Prezi. Videos could also be created with a video editing module.
+
+Presentations are a better method of conveying and sharing information than sharing nodes directly. Though node sharing will be possible, this project will always recommend creating and sharing presentations. Presentations are not expected to be available at v1.0.0.
 
 ####Presentation builder
 
+At the heart of presentations is the presentation builder. The presentation builder will allow a user to pull in information to a presentation and apply visual effects to it to make it more appealing. Music, videos and other media may be imported. If a module is compatible with presentations, it can be used, as well. Since a node contains all relevant information, modules and links, creating a presentation can move at an accelerated pace. A user can focus more time on making the presentation appealing and understandable than researching and importing information.
+
+As mentioned earlier, different types of presentations can be made. A few examples are a video, a slideshow, or a web. In each of these presentations, nodes can take different forms, links can be mapped to different slides or frames, and information can be organized to emphasize specific points. If so inclined, a simple web can be made of nodes, and a specific order of nodes can be presented. Linkages and other node data will persist.
+
 ###Print-out
 
+Though this project is digital, it is important to take into consideration that some learners feel more comfortable taking notes on paper. Others may have no choice but to take notes on paper. Although it is the author's opinion that all schools should be providing some type of technology to students for their disposal, that decision is left to individual schools and is unfortunately not reflected in many of them. That is why this project will support print-outs and scan-ins.
+
+Print-outs are simply papers with node boxes in them, where information can be written into. All of the necessary tools will be available, with the ability to show the scan-in processor what exactly the user wants done. The writer can specify their notebook of choice, whether or not a node is to be extended for more space, show links between nodes, assign nodes to categories (a sheet will be available for all available categories) and group nodes in containers.
+
+Print-outs can also be filled out for review. A user may create a print-out, similar to the way he or she prepares a presentation, and print it out for review. Links will be preserved, and modules capable of print out will be printed with it. Custom settings will allow automatic formatting of modules (or lack thereof). A custom setting for number of pages may be employed, in case the user has limited resources. The more pages specified, the more information and modules may be listed. The pre-filled print-out system is expected to come out between v1.0.0 and v2.0.0.
+
 ####Scan-in
+
+Once a user has everything filled out and has a chance to access a computer or phone, they can then scan in their papers. This can be done with a scanner or a photo. Naturally, photos will have to be high enough quality to be accurately interpreted. The scan-in processor will then have to use pattern recognition to read the handwriting, use other methods to interpret linkages and other informative marks, and pass the information to the user's account. The server will then attempt to automatically generate missed links and information, and apply applicable modules to the nodes. The print-out can then be discarded and replaced with a print-out with printed data. The print-out/scan-in system is not expected to be completed until many versions have passed. A great amount of research and testing must be observed firstly.
 
 Interface
 ---------

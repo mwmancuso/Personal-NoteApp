@@ -160,6 +160,8 @@ The all-mighty node. Nodes in themselves are quite simple. They contain informat
 
 The title of the node is just like the title of anything else. It classifies the node and also helps modules and backends get a grip on what your node will be able. Titles in addition to node categories are very important, but that will be explained shortly. The title may also be seasoned with a picture. Pictures other than a main picture will have to fall in a module overflow. Nodes may also be color-coded for better distinction on modules like maps and a timeline.
 
+Nodes may be labeled as a process, which allows for listing steps.<sup>1</sup>
+
 The information for a node is all of the facts, statistics, opinions, and whatever else can be listed about the title. It is like bullets in typical note-taking applications. However, every node entry—bullet—is separable. They may be rearranged and manipulated individually. It is important to create multiple entries for each topic of information. This allows everything to flow more smoothly. For example, a multiple choice quiz may be generated using a node. Let's take this into example:
 
 Node A has three node entries: 1, 2 and 3.
@@ -179,6 +181,8 @@ D. 9
 The correct answer would be C. 5 is the node entry from Node B, so, unless there is overlap, 5 would be the true about Node B. In the long run, computer learning may take guesses at multiple choice entries that may have overlap and either remove those questions or make multiselect answers.
 
 This brings up another point: what about information that isn't very useful on its own? Such as a person's age, birth-place, or things of the sort. Entries that contain this information may be flagged as insignificant. These types of facts are intended to be imported from a node backend, to save valuable research time.
+
+<sup>1</sup>**Needs further definition**
 
 ####Node Categories
 
@@ -225,6 +229,7 @@ Node categories are incredibly important in defining the function and relationsh
  * Theory
  * Postulate
  * ...
+* Process
 
 As the user base of this project grows, categories will be able to be automatically defined via a crowd-sourcing method.
 

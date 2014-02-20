@@ -66,7 +66,7 @@ Notebooks are intended to be specific to a certain topic. For example, every cla
 
 ###Modules
 
-Modules are dockable panels that are deeply integrated with nodes. Modules may be notebook-dependent or not. Modules allow a deeper learning experience and will help with all types of learning. They will allow learners to visualize, organize, hear and learn the information. Modules are the basis for notebook templates, as templates are simply be different layouts of modules. All modules are available for use in any notebook, however it is unlikely that a chemical compound viewer will be needed in a History class or a 3D shape viewer will be needed in an English class. Certain modules may be dockable outside of individual notebooks, for example a to-do list or calendar. Modules both make use of the APIs of other services and also will be extensible via APIs of this project. Below is a list of modules that are to be developed.<sup>1</sup>
+Modules are dockable panels that are deeply integrated with nodes. Modules may be notebook-dependent or not. Modules allow a deeper learning experience and will help with all types of learning. They will allow learners to visualize, organize, hear and learn the information. Modules are the basis for notebook templates, as templates are simply be different layouts of modules. All modules are available for use in any notebook, however it is unlikely that a chemical compound viewer will be needed in a History class or a 3D shape viewer will be needed in an English class. Certain modules may be dockable outside of individual notebooks, for example a to-do list or calendar. Modules can also be embedded inside nodes themselves. Embedded modules should be mostly text; other types of media should be displayed outside of nodes to not be distracting. Examples of such embedded modules would be a numbered list, to show steps. Modules both make use of the APIs of other services and also will be extensible via APIs of this project. Below is a list of modules that are to be developed.<sup>1</sup>
 
  * Maps (both historic and current)
  * Timeline
@@ -95,6 +95,7 @@ Modules are dockable panels that are deeply integrated with nodes. Modules may b
  * To-do list
  * Calendar
  * Weather
+ * Numbered List
 
 All of these modules are not meant to be mainly web-based. Mobile modules should also be developed with a specialized interface.
 
@@ -160,8 +161,6 @@ The all-mighty node. Nodes in themselves are quite simple. They contain informat
 
 The title of the node is just like the title of anything else. It classifies the node and also helps modules and backends get a grip on what your node will be able. Titles in addition to node categories are very important, but that will be explained shortly. The title may also be seasoned with a picture. Pictures other than a main picture will have to fall in a module overflow. Nodes may also be color-coded for better distinction on modules like maps and a timeline.
 
-Nodes may be labeled as a process, which allows for listing steps.<sup>1</sup>
-
 The information for a node is all of the facts, statistics, opinions, and whatever else can be listed about the title. It is like bullets in typical note-taking applications. However, every node entry—bullet—is separable. They may be rearranged and manipulated individually. It is important to create multiple entries for each topic of information. This allows everything to flow more smoothly. For example, a multiple choice quiz may be generated using a node. Let's take this into example:
 
 Node A has three node entries: 1, 2 and 3.
@@ -182,7 +181,7 @@ The correct answer would be C. 5 is the node entry from Node B, so, unless there
 
 This brings up another point: what about information that isn't very useful on its own? Such as a person's age, birth-place, or things of the sort. Entries that contain this information may be flagged as insignificant. These types of facts are intended to be imported from a node backend, to save valuable research time.
 
-<sup>1</sup>**Needs further definition**
+Nodes may also have embedded modules. These modules will allow different types of information to be inputted. Some of such modules may be a numbered list, for ordering the steps of something. Another example could be a formula builder. Most of these embedded modules should be mostly text or glorified text. Other types of media should be stored outside of the node in other modules. The reason for embedded modules instead of simple embedded functionality is that modules can be developed independently. For things like a numbered list, this may seem like a simple function that should be native to nodes. However, the information in a node can be used elsewhere in a variety of different ways. A module for a numbered list separates the list from the node entries. This way, if a practice quiz or something related were to be generated, a special type of question could be tailored to the numbered list.
 
 ####Node Categories
 
@@ -273,6 +272,46 @@ Once a user has everything filled out and has a chance to access a computer or p
 
 Interface
 ---------
+
+The interface of this project is perhaps one of the most important aspects. A poorly designed interface would render this project useless. This project includes some complicated tasks. Those tasks ought to pay off in the end. However, if it is too complicated to complete these tasks, users may not opt to complete them. The interface of this project is designed with simplicity and functionality in mind.
+
+###Design Principles
+
+####Simplicity
+
+The interface in this project must be simplistic as possible. Text will be used where necessary, but icons will also be used sparingly. Padding will be plentiful, and everything must be spaced correctly to not be confusing. To the same extent, the screen must not be filled with too much at any given time. The device being used and the resolution of the device will all have to be taken into consideration. To avoid distractions, this app must suggest (on computers) or force (on mobile devices) full screen as much as possible. Unimportant parts of the design must be either hidden or miniscule when not used. The user should not feel overwhelmed at any time while using this app.
+
+####Functionality
+
+Though the design is meant to be simple, the underlying functionality should be heavy. Functions should be hidden, and revealed to the user in intervals. Different functions should be accessible via different methods. Those methods should include mouse-specific and keyboard-specific functions. Methods on mobile devices should make use of mobile characteristics, such as accelerometers. Some learners are graphically oriented. They will want to use their mouse as much as possible. Functions should be available via mouse at all times, especially for beginners. Those same functions should be offered via keyboard commands, as well. Keyboard shortcuts should be compatible with other standard keyboard shortcuts. These should be revealed to the user in tip-form, so as not to overwhelm the user. However, for those who are naturally keyboard-oriented, an entire keyboard command list should be offered.
+
+####Color and Layout
+
+The default color and layout should be neutral and neutrally appealing. Notice the keyword, "default." Customizability will be discussed shortly. The theme must be textured, but not overly so, and should make use of colors and effects to show functions and events. Contrast should be employed, and emphasis should be put on what the user is currently working on. Distracting colors and layouts are to be shunned. The layout of this project must be logical. Nodes, modules and system functions should be placed in logical places throughout the interface. Their placements should be specifically linked to their functions.
+
+####Customizability
+
+All learners are different. Although some users simply want to stick with the default theme, many will be inclined to customize it to their taste or work styles. A library of themes should be available, as should a theme manager to further refine styles. Color schemes should be employed as opposed to individual color selection to all faster and easier modification of colors and themes. Layouts should be customizable by employing moveable and collapsible panels. A user should be able to view or hide what they want at any given time during operation. Though some tasks may be automated, options should be given to suppress these automations and replaced with tooltips to perform those tasks manually.
+
+The settings page should be segregated in terms of basic and advanced settings. Basic settings should suffice for most users, but users wishing for more control should be allowed to exercise finer control over their interface. Options that can be modified automatically or via the code of the project should also be modifiable by the user. This, in effect, gives users as much freedom as the designers could easily obtain.
+
+####Third-party Principles
+
+All of these principles extend down to third-party modules or backends. Backends must be customized to allow for integration into the interface system. Color schemes and layouts should also affect the backends and third-party modules. Developers of third-party modules should have a document resembling this one with a set of design principles to follow. The module API should allow for integration into the interface system. A review system may need to be employed to enforce compliance.
+
+###Interface Breakdown
+
+This section will describe most parts of the interface. Some parts may be subject to modification and adaptation, but most of these definitions should be followed.
+
+A new user is presented with a very nice page presenting information of the project and its branding. Registration is available on this page directly. The registration/login page is overly simplistic yet informational. Videos and pictures is prominent and exemplify the features of this project. However, links are provided in an easily visible bar to find more information about the project, contact information, prices (if applicable) and more. Registration is not required for accessing any of those links. As many of those links as possible do not require loading a new page, rather they move elements to show the information. Also, a new page is not loaded for registration or logging in. This keeps everything simple and concise.
+
+Note: this refers to the default layout. Many of the modules, panels and settings are customizable by the user.
+
+After the user logs in, they will be presented with a notebook canvas and a notebook list on the left. The notebook canvas is populated with the most recent edited notebook if the user isn't new, or is blank for a new user. If no notebooks are available, the notebook list will instead request that the user adds a new notebook. A toolbar is available at the top that has links to user settings, sharing information and user information. Branding for this project is also visible. After a notebook is selected, this toolbar will be made thinner or hide itself, depending on the settings of the user and the screen resolution. A watermark for branding of this project may or may not be visible if the toolbar is hidden. The notebook list is meant to be hidden, as the notebook canvas is pushed to the right rather than shrunken when the list is open. The notebook list is hidden when a notebook is selected. All hidden panels are be accessible either by hovering or clicking on an overlaid pulldown marker.
+
+A new user is presented with a tutorial about how to use the application that is overlaid on the entire interface. The tutorial is preliminary, and shows only the basics of the app. An example notebook will be opened to demonstrate some of the features. The user will be guided through using the application. This tutorial is navigable and may be closed at anytime. It will also be available via a help menu on the toolbar. Most tutorials this app uses are like this one.
+
+The notebook canvas is where the user will spend most of his or her time. The canvas takes up the entire screen once a notebook is selected. The main attractions of the canvas are the nodes. They will take up the entire screen if no modules are opened. Depending on the previous layout, these nodes may be arranged in a linear fashion, a web view, or other layouts defined by modules. The node layout may be changed via a floating selector. Different markers, such as lines or icons, show connections and information about the nodes. Panel pull-out markers are available on the sides of the canvas. These panels are stackable and paginated. The panels may automatically expand when selecting a node that uses a module. Inside the panels are modules. Depending on the type of modules, they may be listed in a scrollable list, they may be paginated, or a module may take up the entire panel. Modules may be dragged, moved, opened or closed. A search box will float in the canvas and allow for searching the information and also modules. The rest of the functionality in the design boils down to the specificities of the node system and the module system. Those specificities will be constantly developed, and will not be listed here.
 
 Development Workflow
 --------------------

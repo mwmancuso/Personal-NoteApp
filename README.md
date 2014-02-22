@@ -134,6 +134,9 @@ Backends and services must be used for many of the modules. Some modules will be
  * Weather.com
  * OpenWeatherMap
  * Forecast.io
+ * Freebase
+ * GIS Files
+ * Khan Academy
 
 ####Module API and Directory
 
@@ -143,7 +146,7 @@ APIs drive the Web today. This project will have both external and internal APIs
 
 A directory will be available for users to add custom modules or find outside services that can integrate with this project. All of the general security measures will be taken to ensure data safety and control.
 
-An API is not planned for development until during or after the beta phase. The API will be a project of its own. It may be developed in tandem with the mobile applications.
+An open API is not planned for development until during or after the beta phase. The open API will be a project of its own. It may be developed in tandem with the mobile applications. A closed API for in-built modules will be developed from the beginning.
 
 ###Containers
 
@@ -316,5 +319,37 @@ The notebook canvas is where the user will spend most of his or her time. The ca
 Development Workflow
 --------------------
 
+There are a few central principles that must be defined and points that must be made before getting into the actual development workflow. They are as follows.
+
+###Principles and Points
+
+####Django
+
+Starting this project, Django is used to get a start using Python as a web programming language. Django offers a few features that could benefit this project. However, it is important to realize that a migration away from Django is expected in the future. Django may still be used as a wrapper, but many of its functions will be replaced by home-brewn functions. Development of this project must realize this. Different apps in Django should be replaceable by custom modules one at a time, so that Django can eventually be pushed out. There are no personal vendettas against Django here, however this project may require customization that extend beyond the customization offered by Django.
+
+####Modularity
+
+All parts of this project must be developed with the ability to be separated from each other. Though they will communicated via an object oriented approach, the innards of apps (objects) should be able to be rewritten while the rest of the project stays the same. Modularity will allow for ease of maintenance and also an easier migration away from Django.
+
+####Collaboration
+
+This app was designed originally to be developed by one person. That, of course, may change as the project grows. It is for this reason that collaboration must be taken into consideration throughout the development of this project. Code should be properly designed and commented. Git must be used thoroughly and wholly throughout the entire development process. All commits should be labeled and tags should be useful indicators of progress. A central checklist, perhaps this very README, should be employed. The project should be designed so anybody can pick up or leave off the project at any time.
+
+####Databases
+
+###Development Process
+
+####Checklist
+
 Project Versioning
 ------------------
+
+###Development (v0)
+
+###Alpha (v1)
+
+###Beta (v2)
+
+###Production (v3)
+
+###Massive Upgrades (v4+)

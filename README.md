@@ -337,9 +337,42 @@ This app was designed originally to be developed by one person. That, of course,
 
 ####Databases
 
+The development of this project will use a PostgreSQL database to start. The structure of the database will be defined later and as development progressed, but it is important to note the PostgreSQL is a relational database. Though the database will suffice for user details and other structured data, the storing of nodes is more of a dynamic and unstructured data type. In the future of this project, a graph database is expected to be employed. A graph database will better support the node layout of this project, as they use the same principles: nodes and connections. Just like computers can learn more from a node database, people should be able to learn more from a node note-taking system.
+
 ###Development Process
 
+The process of development will start simple. Django's features will be used, and data processing will remain simple. As time progresses, however, development will become more complicated. For that reason, organization is of utmost importance from the beginning of development. All aspects of development should be documented and tracked. A checklist of development is provided.
+
 ####Checklist
+
+This checklist is to be modified as development proceeds. Development and this checklist are to be meshed. Keys for this checklist:
+
+* **Bold** items indicate **current** development progress.
+ * Currently developed items should have sub-items for more specific progress.
+* Normal items indicate **incomplete** development progress.
+* ~~Crossed out~~ items indicate **complete** development progress.
+* [Bracketed] version numbers or number ranges indicate when the development progress is expected to be completed by if the item is normal or **bold**, or was completed if the item is ~~crossed out~~.
+
+The development checklist is intended to be in as much order as it can be. Some pieces of development will depend on others, so many will be developed concurrently, but an effort will be made to keep the checklist in chronological order. The checklist:
+
+* Login/account system [v1]
+* Graphical interface for accounts [v1]
+* Database layout for general node system [v1]
+* Graphical interface for general node system [v1]
+* In-house module API database layout [v1]
+* In-house module API [v1]
+* Backend system [v1]
+* In-house modules (list should be established at this point) [v1]
+* Simple transfer print-out sheets [v1]
+* Project name [v1]
+* In-house alpha modules (list should be established at this point) [v2]
+* Prefilled print-out system [v2]
+* Presentation system [v2]
+* In-house beta modules (list should be established at this point) [v3]
+* Open module API [v3]
+* Complete print-out system with scan-ins [v3]
+* Open general API [v3]
+* Mobile apps [v3]
 
 Project Versioning
 ------------------

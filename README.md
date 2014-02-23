@@ -365,9 +365,11 @@ The development checklist is intended to be in as much order as it can be. Some 
 * In-house modules (list should be established at this point) [v1]
 * Simple transfer print-out sheets [v1]
 * Project name [v1]
+* User tutorial [v1]
 * In-house alpha modules (list should be established at this point) [v2]
 * Prefilled print-out system [v2]
 * Presentation system [v2]
+* Move to graph database system for nodes [v2]
 * In-house beta modules (list should be established at this point) [v3]
 * Open module API [v3]
 * Complete print-out system with scan-ins [v3]
@@ -377,12 +379,49 @@ The development checklist is intended to be in as much order as it can be. Some 
 Project Versioning
 ------------------
 
-###Development (v0)
+Note: The lowercase V next to a number indicates a version number. For example, v0 indicates version 0, v1 indicates version 1, etc.
+Also note: This section only refers to the website project version. APIs and mobile apps will have their own versioning section.
 
-###Alpha (v1)
+###Version number breakdown
 
-###Beta (v2)
+Version numbers are in the format of vX.Y.Z, except for development progress, which includes another identifier (vX.Y.Z.A):
 
-###Production (v3)
+####vX.y.z.a
 
-###Massive Upgrades (v4+)
+X refers to major updates to the project. Updates to this number will indicate advanced usability for the project. v0 is the development phase. v1 is the alpha phase. v2 is the beta phase. Finally, v3 is the production phase. All subsequent major updates will be labeled v4 and so on. Major updates are intended to be employed when many number of changes have been made and the project has a new plethora of changes. All new designs should be rolled into a major upgrade. Users may have to become accustomed to major updates, so most major updates should include a "getting started with vX.0.0" tutorial. Introduction of a new major release may require down-time, which is important to take into consideration.
+
+####vx.Y.z.a
+
+Y refers to minor upgrades to the project. This may be a new modules, a fairly large amount of bug updates, or another task in the checklist completed. In fact, every time a new item in the checklist is completed, the minor number should be incremented. Note that this refers to main items, not sub-items.
+
+####vx.y.Z.a
+
+Z refers to bug fixes or minor progress. Z should be updated for every sub-item on the checklist that is completed. It should also be updated whenever a major bug fix or many small bug fixes are released. In a production environment, this will be the most frequently updated version number, so it is important not to change this too often. Single small bug fixes should be pushed off until an adequate number of small bug fixes are created.
+
+####vx.y.z.A
+
+A refers to the development versioning number. This is likely to be incremented often. A should incremented every time a major developmental breakthrough is solidified. Small bug fixes should be included in this version numbering. If a part of development breaks anything else, or if it is unusable, A should not be incremented. However, incomplete developments may be included as long as they work and do not break anything else.
+
+A will not be used in any production version of this project. However, a user may opt to sign up for developmental testing. Those users would only get updates as long as they made it into an A increment. This would mean that undercover developments cannot be included in A. Note that the development environment (dev.projectname.com) will reflect intermediary updates between increments of A. These updates will not be tagged with version numbers. This is because development may break parts of the project. The development environment should only be used and available to developers of the project.
+
+###Development Phases
+
+####Development (v0)
+
+The development of this project will take place during v0. The development phase is where most of the groundwork will be laid for the project. It will include rapid development and changes. Registration for the project will not be opened to the public. The registration page is to be developed, but it should be locked. Note that as v0 is not considered a production phase, the A versions will be pushed to the production environment.
+
+####Alpha (v1)
+
+The alpha phase is the first production phase for this project. For that reason, a plethora of bugs is expected to pop up. These must be dealt with before moving onto the beta phase. Also, v1 will be incomplete in terms of usability. Most of the functionality expected will be there, but some features will have to be pushed off until v2. For that reason, the alpha phase should allow only a select number of users in the beginning. Later during the alpha phase, it may be opened up to the public.
+
+####Beta (v2)
+
+The beta phase of this project must be able to be opened to the public. Many of the most apparent bugs are to be fixed and all functionality that makes the project what it is should be available. Production during v2 will take place at a rapid pace to get it ready for v3.
+
+####Production (v3)
+
+The production phase is when everything is set in stone and ready for a large user base. During v3, production of the website should slow to focus more development on the mobile apps and APIs for the project. Most bugs should be taken care of, and feature requests will most likely provide the basis for development during v3. Advertising may be employed at this point if the project is expected to yield a profit.
+
+####Massive Upgrades (v4+)
+
+Subsequent upgrades to this project may have names or labels to classify them. They will be used for major upgrades and changes that will directly affect many users. Note that just because this project has reached a stable phase, development should not hault. Innovation is very important and this project should continue to grow version after version to serve the needs of many students, learners and general people.

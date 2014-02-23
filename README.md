@@ -247,8 +247,15 @@ All modules and backends used either automatically or manually will be linked to
 
 Nodes may not only be linked to modules, but *internode connections may be established*. These links may be established automatically or manually via a click and drag interface. Users of graphic editing software may be familiar with node connections. However, node links in this project are not one-way. The benefits of node links may not be immediately noticeable. However, once it comes time to review information, node links will become life-savers. Let's say that you are learning about presidents. You find George W. Bush and see that he is a Republican. You need a refresher on the Republican Party. Good news for you, your node for the Republican Party is already floating next to Bush with a line indicating linkage. So you read what you have listed about the party. Then you find yourself wondering what other presidents are Republicans. So you click on the node and find 17 other Republican presidents. You can then see when parties were in office on the timeline, since the parties are color-coded.
 
-Node links are obviously a powerful tool for reviewing information. Node links may be created automatically via backends, however manual creation is required. A good strategy for linking nodes from the start will pay off exponentially in the end. However, like everything else in this project, node-linkage is not a static property. Nodes links can be added, removed, or modified at any time.
+Node links are obviously a powerful tool for reviewing information. Node links may be created automatically via backends, however manual creation is required. A good strategy for linking nodes from the start will pay off exponentially in the end. However, like everything else in this project, node-linkage is not a static property. Nodes links can be added, removed, or modified at any time. Node links can also be classified. To keep it simple, only a few link classifications are available:
 
+ * Synonymous relationship
+ * Antonymous relationship
+ * Positive relationship
+ * Negative relationship
+ * Neutral relationship
+ * Member of relationship (a one way connection)
+ 
 ###Presentations
 
 Presentations are an important part of learning and teaching alike. With so much information at hand, this project would be perfect for creating presentations. Different types of presentations may be created. Presentations could be exported or imported to backends, such as Powerpoints, Google Docs, or Prezi. Videos could also be created with a video editing module.
@@ -414,6 +421,8 @@ The development of this project will take place during v0. The development phase
 ####Alpha (v1)
 
 The alpha phase is the first production phase for this project. For that reason, a plethora of bugs is expected to pop up. These must be dealt with before moving onto the beta phase. Also, v1 will be incomplete in terms of usability. Most of the functionality expected will be there, but some features will have to be pushed off until v2. For that reason, the alpha phase should allow only a select number of users in the beginning. Later during the alpha phase, it may be opened up to the public.
+
+The alpha phase is expected to be completed by the time my graduation experience presentation begins.
 
 ####Beta (v2)
 

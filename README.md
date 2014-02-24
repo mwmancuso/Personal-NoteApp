@@ -2,6 +2,8 @@ Notesapp
 ========
 First thing's first, **Notesapp is a placeholder name** for this project. Though descriptive, this project should have a better, complete name by v1.0.0. For that reason, the rest of this document will **refer to Notesapp as "this project"** for mobility.
 
+The master branch of this Git project is available at http://dev.notes.xpandismo.com/.
+
 What Is It?
 -----------
 This project is meant to be a new take on note-taking. Simple, linear pages of unorganized notes is old-school and helps much *less* than what is expected. However, there have been few to no advancements in this field since paper notes caught on. Sure, maybe we have a few different maps and other types of visual organizers, but how much do they *really* contribute to our learning? The majority of notes are still taken in a linear fashion.

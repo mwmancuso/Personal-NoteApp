@@ -2,7 +2,7 @@ Notesapp
 ========
 First thing's first, **Notesapp is a placeholder name** for this project. Though descriptive, this project should have a better, complete name by v1.0.0. For that reason, the rest of this document will **refer to Notesapp as "this project"** for mobility.
 
-The master branch of this Git project is available at http://dev.notes.xpandismo.com/.
+The master branch of this Git project is available at https://dev.notes.xpandismo.com/.
 
 What Is It?
 -----------

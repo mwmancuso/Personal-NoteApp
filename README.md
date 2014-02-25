@@ -390,7 +390,6 @@ The development checklist is intended to be in as much order as it can be. Some 
  * Ambiguous error pages
  * Brute force protection
  * Admin section
- * - SSL Authentication
  * ~~SSL (StartSSL)~~
 * Graphical interface for accounts [v1]
 * Database layout for general node system [v1]

@@ -99,6 +99,7 @@ Modules are dockable panels that are deeply integrated with nodes. Modules may b
  * Weather
  * Numbered List
  * Time tracker
+ * Diagram maker
 
 All of these modules are not meant to be mainly web-based. **Mobile modules should also be developed** with a specialized interface.
 

@@ -367,18 +367,7 @@ This checklist is to be modified as development proceeds. Development and this c
 The development checklist is intended to be in as much order as it can be. Some pieces of development will depend on others, so many will be developed concurrently, but an effort will be made to keep the checklist in chronological order. The checklist:
 
 * **Login/account system** [v1]
- * **Database structure**
- * - ~~Used ID~~
- * - ~~Username~~
- * - ~~Real name~~
- * - ~~User created~~
- * - ~~Email~~
- * - ~~Password~~
- * - ~~Password change date~~
- * - ~~Previous passwords~~
- * - ~~User type~~
- * - ~~Last access~~
- * - ~~Email auth~~
+ * ~~Database structure~~
  * Password protection (Salt, CSPRNG, bcrypt)
  * Password complexity checking
  * - http://its.ucsc.edu/policies/password.html

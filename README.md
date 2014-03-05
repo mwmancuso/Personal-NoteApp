@@ -382,6 +382,7 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - Admin 2-step (OAUTH)
  * - ~~SSL client authorization~~
  * ~~SSL (StartSSL)~~
+ * Error handling
 * Graphical interface for accounts [v1]
 * Database layout for general node system [v1]
 * Graphical interface for general node system [v1]

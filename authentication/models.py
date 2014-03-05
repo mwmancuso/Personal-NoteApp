@@ -1,6 +1,16 @@
 from django.db import models
 
 class Users(models.Model):
+    """Database model for user storage.
+    
+    Does not store user authentication methods. Fields requiring
+    further explanation are as follows:
+    
+    user_type: integer describing the type of user. As of now, includes
+            the following:
+        0: standard user
+        1: admin user
+    """
     username = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
@@ -14,6 +24,17 @@ class Users(models.Model):
         return self.username
 
 class Methods(models.Model):
+    """Database model for authentication methods. Fields requiring
+    further explanation are as follows:
+    
+    password/token: only one may be defined; password hashes are often
+            shorter and quicker and are not arbitrary.
+    step: for multi-step authentication, important to be defined.
+    status: current availability status of the method for the user.
+            Currently includes the following:
+        0: active
+        1: inactive
+    """
     user_id = models.ForeignKey(Users)
     method = models.IntegerField()
     password = models.CharField(max_length=60, blank=True)

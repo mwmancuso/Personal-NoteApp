@@ -7,13 +7,8 @@ app_databases = {
 }
 
 class AppRouter(object):
-    """
-    Router that routes specific apps to specific database definitions if defined.
-    """
+    """Routes specific apps to specific databases if app is defined."""
     def db_for_read(self, model, **hints):
-        """
-        Routes read only calls to defined read only database definition.
-        """
         if model._meta.app_label in app_databases:
             return app_databases[model._meta.app_label]['ro']
         else:
@@ -21,9 +16,6 @@ class AppRouter(object):
     
     
     def db_for_write(self, model, **hints):
-        """
-        Routes write calls to defined read/write database definition.
-        """
         if model._meta.app_label in app_databases:
             return app_databases[model._meta.app_label]['rw']
         else:

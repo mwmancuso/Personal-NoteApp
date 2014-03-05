@@ -16,7 +16,7 @@ class Users(models.Model):
     last_name = models.CharField(max_length=30, blank=True)
     email = models.EmailField(max_length=75)
     user_type = models.IntegerField(default=0)
-    last_access = models.DateTimeField()
+    last_access = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True, auto_now_add=True)
     
@@ -35,13 +35,15 @@ class Methods(models.Model):
         0: active
         1: inactive
     """
-    user_id = models.ForeignKey(Users)
+    user = models.ForeignKey(Users)
     method = models.IntegerField()
     password = models.CharField(max_length=60, blank=True)
     token = models.TextField(blank=True)
     step = models.IntegerField()
     status = models.IntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=True)
+    last_used = models.DateTimeField(null=True)
     
     def __str__(self):
         return self.user_id

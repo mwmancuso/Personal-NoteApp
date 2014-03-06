@@ -366,9 +366,11 @@ This checklist is to be modified as development proceeds. Development and this c
 
 The development checklist is intended to be in as much order as it can be. Some pieces of development will depend on others, so many will be developed concurrently, but an effort will be made to keep the checklist in chronological order. The checklist:
 
-* **Login/account system** [v1]
+* **Error handling** [v1]
+* Locality [v1]
+* Login/account system [v1]
  * ~~Database structure~~
- * **Login system methods**
+ * Login system methods
  * - Password protection (Salt, CSPRNG, bcrypt)
  * - Password complexity checking
  * -- http://its.ucsc.edu/policies/password.html
@@ -382,8 +384,6 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - Admin 2-step (OAUTH)
  * - ~~SSL client authorization~~
  * ~~SSL (StartSSL)~~
-* Error handling [v1]
-* Locality [v1]
 * Graphical interface for accounts [v1]
 * Database layout for general node system [v1]
 * Graphical interface for general node system [v1]

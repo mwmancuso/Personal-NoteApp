@@ -1,20 +1,49 @@
 from django.db import models
 
 class Users(models.Model):
-	username = models.CharField(max_length=50, unique=True)
-	first_name = models.CharField(max_length=30, blank=True)
-	last_name = models.CharField(max_length=30, blank=True)
-	email = models.EmailField(max_length=75)
-	user_type = models.IntegerField(default=0)
-	last_access = models.DateTimeField()
-	created = models.DateTimeField(auto_now_add=True)
-	modified = models.DateTimeField(auto_now=True, auto_now_add=True)
+    """Database model for user storage.
+    
+    Does not store user authentication methods. Fields requiring
+    further explanation are as follows:
+    
+    user_type: integer describing the type of user. As of now, includes
+            the following:
+        0: standard user
+        1: admin user
+    """
+    username = models.CharField(max_length=50, unique=True)
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+    email = models.EmailField(max_length=75)
+    user_type = models.IntegerField(default=0)
+    last_access = models.DateTimeField(null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True, auto_now_add=True)
+    
+    def __str__(self):
+        return self.username
 
 class Methods(models.Model):
-	user_id = models.ForeignKey(Users)
-	method = models.IntegerField()
-	password = models.CharField(max_length=60, blank=True)
-	token = models.TextField(blank=True)
-	step = models.IntegerField()
-	status = models.IntegerField(default=0)
-	updated = models.DateTimeField(auto_now=True, auto_now_add=True)
+    """Database model for authentication methods. Fields requiring
+    further explanation are as follows:
+    
+    password/token: only one may be defined; password hashes are often
+            shorter and quicker and are not arbitrary.
+    step: for multi-step authentication, important to be defined.
+    status: current availability status of the method for the user.
+            Currently includes the following:
+        0: active
+        1: inactive
+    """
+    user = models.ForeignKey(Users)
+    method = models.IntegerField()
+    password = models.CharField(max_length=60, blank=True)
+    token = models.TextField(blank=True)
+    step = models.IntegerField()
+    status = models.IntegerField(default=0)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True, auto_now_add=True)
+    last_used = models.DateTimeField(null=True)
+    
+    def __str__(self):
+        return self.user_id

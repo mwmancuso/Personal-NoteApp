@@ -258,7 +258,7 @@ Node links are obviously a powerful tool for reviewing information. Node links m
  * Positive relationship
  * Negative relationship
  * Neutral relationship
- * Member of relationship (a one way connection)
+ * Member-of relationship (a one way connection)
  
 ###Presentations
 
@@ -350,6 +350,14 @@ This app was designed originally to be developed by one person. That, of course,
 
 The development of this project will use a PostgreSQL database to start. The structure of the database will be defined later and as development progressed, but it is important to note the PostgreSQL is a relational database. Though the database will suffice for user details and other structured data, the storing of nodes is more of a dynamic and unstructured data type. In the future of this project, a graph database is expected to be employed. A graph database will better support the node layout of this project, as they use the same principles: nodes and connections. Just like computers can learn more from a node database, people should be able to learn more from a node note-taking system.
 
+####Error Handling
+
+Error handling was initially an afterthought and then realized to be a very important aspect of development. To have a better understanding of how errors will be handled, a distinction must be made between user and system errors. **User** errors are errors invoked by a user. These errors are to be expected and thrown after a validation fail. **System** errors are errors that the user could not fix. System errors include programming errors and communication errors.
+
+User errors will have their own error handling module that is expected to handle the loading and translation of strings. This is to provide a simple interface for defining what the user will see when causing an error. User errors are to be handled by the UserError exception. A set of error codes is passed to the exception. The exception is not to be caught by any modules other than a view. However, if the catching of an exception is required, the exception should be passed on to the view in order to display valuable information to the user. Exceptions should be thrown only after all validations take place in a definition; the error codes being appended and passed at the end. In high security definitions, such as login authentication, only one error code should be given to prevent distinguishable errors from appearing for malicious users.
+
+System errors must be logged extensively. The user should only receive one error page that gives no information about the error other than an instance number that can be sent to an administrator to debug the issue. That instance error should also be logged alongside the error itself. System errors may in the future have their own string handler, but that would only be for nested views such as a user's module.
+
 ###Development Process
 
 The process of development will start simple. Django's features will be used, and data processing will remain simple. As time progresses, however, development will become more complicated. For that reason, organization is of utmost importance from the beginning of development. All aspects of development should be documented and tracked. A checklist of development is provided.
@@ -367,6 +375,12 @@ This checklist is to be modified as development proceeds. Development and this c
 The development checklist is intended to be in as much order as it can be. Some pieces of development will depend on others, so many will be developed concurrently, but an effort will be made to keep the checklist in chronological order. The checklist:
 
 * **Error handling** [v1]
+ * User errors
+ * - Exception class
+ * - String handler
+ * System errors
+ * - Logging system
+ * Validator methods
 * Locality [v1]
 * Login/account system [v1]
  * ~~Database structure~~

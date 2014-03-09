@@ -381,7 +381,7 @@ The development checklist is intended to be in as much order as it can be. Some 
  * System errors
  * - Logging system
  * Validator methods
-* Locality [v1]
+* ~~Locality~~ [v1]
 * Login/account system [v1]
  * ~~Database structure~~
  * Login system methods

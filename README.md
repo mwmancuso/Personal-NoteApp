@@ -375,9 +375,9 @@ This checklist is to be modified as development proceeds. Development and this c
 The development checklist is intended to be in as much order as it can be. Some pieces of development will depend on others, so many will be developed concurrently, but an effort will be made to keep the checklist in chronological order. The checklist:
 
 * **Error handling** [v1]
- * User errors
- * - Exception class
- * - String handler
+ * ~~User errors~~
+ * - ~~Exception class~~
+ * - ~~String handler~~
  * System errors
  * - Logging system
  * Validator methods

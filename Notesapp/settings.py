@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 import os
-from Notesapp.environment import SECRET_KEY, DATABASES
+from Notesapp.environment import SECRET_KEY, DATABASES, DEBUG,\
+    TEMPLATE_DEBUG, LOGGING_FILENAME
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -24,9 +25,7 @@ _ = lambda s: s
 # Secret key is configured in environment file
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
+# Debug settings in environment file
 
 ALLOWED_HOSTS = []
 
@@ -91,3 +90,48 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/notes.xpandismo.com/static/'
+
+# Logging
+# https://docs.djangoproject.com/en/1.6/topics/logging/
+
+if DEBUG == True:
+    LOGGING_LEVEL = 'DEBUG'
+else:
+    LOGGING_LEVEL = 'WARNING'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d '+\
+                      '%(thread)d %(message)s',
+        },
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGGING_FILENAME,
+            'maxBytes': 1048576,
+            'backupCount': 30,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propogate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['file'],
+            'level': LOGGING_LEVEL,
+            'propogate': False,
+        },
+    },
+}

@@ -378,8 +378,8 @@ The development checklist is intended to be in as much order as it can be. Some 
  * ~~User errors~~
  * - ~~Exception class~~
  * - ~~String handler~~
- * System errors
- * - Logging system
+ * ~~System errors~~
+ * - ~~Logging system~~
  * Validator methods
 * ~~Locality~~ [v1]
 * Login/account system [v1]

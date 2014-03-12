@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 import os
-from Notesapp.passkeys import SECRET_KEY, DATABASES
+from Notesapp.environment import SECRET_KEY, DATABASES
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -21,7 +21,7 @@ _ = lambda s: s
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-### Encrypted ###
+# Secret key is configured in environment file
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -60,7 +60,7 @@ WSGI_APPLICATION = 'Notesapp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-### Encrypted ###
+# Databases are configured in environment settings
 
 DATABASE_ROUTERS = ['Notesapp.routers.AppRouter']
 

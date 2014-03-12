@@ -53,6 +53,7 @@ class UserHandler(object):
         translated = list()
         
         for code in self.codes:
+            # _(code) indicates a translation of code be provided
             translated.append(_(code))
         
         return tuple(translated)

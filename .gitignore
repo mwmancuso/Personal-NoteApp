@@ -2,3 +2,4 @@
 .*swp
 Notesapp.wsgi
 django.mo
+Notesapp/environment.py

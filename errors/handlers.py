@@ -17,7 +17,7 @@ class UserHandler(object):
     def __init__(self, *args):
         self.codes = args
     
-    def count(self):
+    def get_count(self):
         """Returns count of errors.
         
         Essentially wrapper for len(inst.codes).
@@ -25,7 +25,7 @@ class UserHandler(object):
         
         return len(self.codes)
     
-    def count_string(self):
+    def get_count_string(self):
         """Returns translated string of count of errors."""
         count = len(self.codes)
         count_str = ungettext(
@@ -38,7 +38,7 @@ class UserHandler(object):
         
         return count_str
     
-    def originals(self):
+    def list_originals(self):
         """Returns tuple of error codes.
         
         Currently an alias for self.codes. May push more functionality
@@ -47,7 +47,7 @@ class UserHandler(object):
         
         return self.codes
     
-    def translations(self):
+    def list_translations(self):
         """Returns tuple of correctly translated error strings."""
         
         translated = list()
@@ -58,7 +58,7 @@ class UserHandler(object):
         
         return tuple(translated)
     
-    def code_translations(self):
+    def list_code_translations(self):
         """Returns dict containing strings with associated codes."""
         
         translated = dict()
@@ -68,7 +68,7 @@ class UserHandler(object):
         
         return translated
     
-    def verbose(self):
+    def list_verbose(self):
         """Returns dictionary of verbose data.
         
         verbose()['count'] is count of errors.
@@ -81,11 +81,11 @@ class UserHandler(object):
         """
         
         verbose_return = {
-            'count': self.count()
-            'count_string': self.count_string()
-            'originals': self.original()
-            'translations': self.translations()
-            'code_translations': self.code_translations()
+            'count': self.get_count()
+            'count_string': self.get_count_string()
+            'originals': self.list_originals()
+            'translations': self.list_translations()
+            'code_translations': self.list_code_translations()
         }
         
         return verbose_return

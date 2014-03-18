@@ -8,22 +8,24 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-from Notesapp.passkeys import SECRET_KEY, DATABASES
+from Notesapp.environment import SECRET_KEY, DATABASES, DEBUG,\
+    TEMPLATE_DEBUG, LOGGING_FILENAME
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# Fake ugettext function for translations
+_ = lambda s: s
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-### Encrypted ###
+# Secret key is configured in environment file
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
+# Debug settings in environment file
 
 ALLOWED_HOSTS = []
 
@@ -38,11 +40,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'south',
-    'authentication'
+    'authentication',
+    'errors',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -55,7 +59,7 @@ WSGI_APPLICATION = 'Notesapp.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
-### Encrypted ###
+# Databases are configured in environment settings
 
 DATABASE_ROUTERS = ['Notesapp.routers.AppRouter']
 
@@ -63,6 +67,14 @@ DATABASE_ROUTERS = ['Notesapp.routers.AppRouter']
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
+
+LANGUAGES = (
+    ('en', _('English')),
+)
+
+LOCALE_PATHS = (
+    os.path.join(BASE_DIR, 'Notesapp/locale/'),
+)
 
 TIME_ZONE = 'America/New_York'
 
@@ -78,3 +90,48 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = '/var/www/notes.xpandismo.com/static/'
+
+# Logging
+# https://docs.djangoproject.com/en/1.6/topics/logging/
+
+if DEBUG == True:
+    LOGGING_LEVEL = 'DEBUG'
+else:
+    LOGGING_LEVEL = 'WARNING'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d '+\
+                      '%(thread)d %(message)s',
+        },
+    },
+    'handlers': {
+        'null': {
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': LOGGING_FILENAME,
+            'maxBytes': 1048576,
+            'backupCount': 30,
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['null'],
+            'propogate': True,
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['file'],
+            'level': LOGGING_LEVEL,
+            'propogate': False,
+        },
+    },
+}

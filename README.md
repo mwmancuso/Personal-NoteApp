@@ -386,9 +386,9 @@ The development checklist is intended to be in as much order as it can be. Some 
  * ~~Database structure~~
  * Login system methods
  * - Password protection (Salt, CSPRNG, bcrypt)
- * - Password complexity checking
- * -- http://its.ucsc.edu/policies/password.html
- * -- May be appended later
+ * - ~~Password complexity checking~~
+ * -- ~~http://its.ucsc.edu/policies/password.html~~
+ * -- ~~May be appended later~~
  * - Password recovery
  * - Connected accounts
  * - Ambiguous error pages

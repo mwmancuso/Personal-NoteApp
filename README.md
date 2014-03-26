@@ -392,6 +392,7 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - Password recovery
  * - Connected accounts
  * - Ambiguous error pages
+ * - Email system with validation
  * Session management
  * Brute force protection
  * Admin section

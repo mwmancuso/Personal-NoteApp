@@ -25,6 +25,49 @@ compatibility, CamelCase should be used for validators here.
 """
 
 from voluptuous import message, truth
+import re
+
+# Authentication
+
+# Validation regex constants
+VALID_USERNAME_REGEX = re.compile(r'^[A-Za-z0-9_]{1,50}$')
+VALID_NAME_REGEX = re.compile(r'^[A-Za-z0-9]{1,30}$')
+VALID_EMAIL_REGEX = re.compile('^(?=[^@]+@[^@]+(\.[^@]+)+).{1,75}$')
+VALID_PASSWORD_REGEX = re.compile(r"""
+    ^
+     (?P<phrase>     # Alternate condition: matches any character...
+      [!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{\|}~ A-Za-z0-9]
+      {16,50}        # ...As long as it is 16 to 50 characters
+     )
+    |
+     (?=             # Condition 1 lookahead assertion
+      .*             # Matches all characters until...
+      (?P<lower>     # Group for checking lower case letters
+       [a-z]         # ...Matches a lower case letter
+      )
+     )?              # Makes lookahead optional; will be checked later
+     (?=             # Condition 2 lookahead assertion
+      .*
+      (?P<upper>     # Group for matching upper case letters
+       [A-Z]
+      )
+     )?
+     (?=             # Condition 3 lookahead assertion
+      .*
+      (?P<number>    # Group for matching digits
+       [0-9]
+      )
+     )?
+     (?=             # Condition 4 lookahead assertion
+      .*
+      (?P<special>   # Group for matching special characters
+       [!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{\|}~ ]
+      )
+     )?
+     [!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{\|}~ A-Za-z0-9]
+     {8,50}        # Asserts that password is 8-50 characters
+    $
+""", re.VERBOSE)
 
 def list_errors(multiple_invalid_exception):
     """Helper function that extracts errors from MultipleInvalid.
@@ -40,3 +83,28 @@ def list_errors(multiple_invalid_exception):
         error_list.append(error.error_message)
     
     return tuple(error_list)
+
+@truth
+def Password(password):
+    """Validator that checks to make sure a password is valid."""
+    
+    match = VALID_PASSWORD_REGEX.match(password)
+    
+    if not match:
+        return False
+    
+    captures = match.groupdict()
+    condition_keys = ('lower', 'upper', 'number', 'special')
+    num_conditions = 3 # Number of conditions required
+    
+    if captures['phrase']:
+        return True
+    else:
+        # List comprehension that sums the number of met conditions
+        count = sum(1 for key in captures.keys() if key in condition_keys\
+                    and captures[key])
+        
+        if count >= num_conditions:
+            return True
+    
+    return False

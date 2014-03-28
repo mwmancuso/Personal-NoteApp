@@ -1,5 +1,10 @@
 from django.db import models
 
+# Static variables for clarity in database
+METHOD_PASSWORD = 0
+METHOD_ACTIVE = 0
+METHOD_INACTIVE = 1
+
 class Users(models.Model):
     """Database model for user storage.
     
@@ -27,9 +32,12 @@ class Methods(models.Model):
     """Database model for authentication methods. Fields requiring
     further explanation are as follows:
     
+    method: integer representing method type:
+        0: password
     password/token: only one may be defined; password hashes are often
             shorter and quicker and are not arbitrary.
     step: for multi-step authentication, important to be defined.
+        Numbered by number of step, i.e. 1 for first step.
     status: current availability status of the method for the user.
             Currently includes the following:
         0: active
@@ -46,4 +54,4 @@ class Methods(models.Model):
     last_used = models.DateTimeField(null=True)
     
     def __str__(self):
-        return self.user_id
+        return str(self.method)

@@ -4,6 +4,9 @@ from django.db import models
 METHOD_PASSWORD = 0
 METHOD_ACTIVE = 0
 METHOD_INACTIVE = 1
+USER_STANDARD = 0
+USER_ADMIN = 1
+USER_INACTIVE = -1
 
 class Users(models.Model):
     """Database model for user storage.

@@ -1,8 +1,10 @@
 from authentication import models
 from errors import validators
+from errors.exceptions import UserError
 from voluptuous import Schema, All, Required, Match, MultipleInvalid, Msg,\
                        IsFalse, Lower
 import bcrypt
+from django.db.models import Q
 
 # Pseudo-function to trick makemessages into making message files
 _ = lambda s: s
@@ -47,8 +49,8 @@ class User(object):
         - email*
         - password* (plaintext)
         
+        TODO:
         MUST CREATE EMAIL SYSTEM FOR VALIDATIONS.
-        MUST CREATE EXISTING USERNAME CHECKING.
         """
         
         if self.user_ob:
@@ -81,7 +83,7 @@ class User(object):
             errors = validators.list_errors(error)
         
         if errors:
-            return errors
+            raise UserError(errors)
         
         # Hashes password using bcrypt
         password = bcrypt.hashpw(validated['password'].encode('utf-8'),\
@@ -89,6 +91,20 @@ class User(object):
         
         # Deletes password from info so it doesn't get inserted here
         del validated['password']
+        
+        current_user = models.Users.objects.filter(\
+            username = validated['username'])
+        
+        if current_user:
+            errors = (_('user-exists'),)
+            raise UserError(errors)
+        
+        current_email = models.Users.objects.filter(\
+            email = validated['email'])
+        
+        if current_email:
+            errors = (_('email-exists'),)
+            raise UserError(errors)
         
         user_ob = models.Users(**validated)
         
@@ -108,14 +124,15 @@ class User(object):
         
         return self.user_ob
     
-    def login_pass(self, **user_info):
+    def login_password(self, **user_info):
         """Handler to login via password authentication.
         
         Accepts two pieces of information: username and password. Both
         are required. Validates, checks and returns user object if user
         exists and password is correct.
         
-        MUST IMPLEMENT USER ACCOUNT VALIDITY CHECKING.
+        TODO:
+        MUST ASSIGN SESSIONS.
         """
         
         if self.user_ob:
@@ -140,31 +157,38 @@ class User(object):
             errors = validators.list_errors(error)
         
         if errors:
-            return errors
+            raise UserError(errors)
         
         user_list = models.Users.objects.filter(\
             username=validated['username'])
         
         if not user_list:
-            return (INVALID_LOGIN,)
+            errors = (INVALID_LOGIN,)
+            raise UserError(errors)
             # May implement delay here to prevent username extracting
         elif len(user_list) != 1:
             # May cause another error here; only one response should be
             # returned.
-            return (INVALID_LOGIN,)
+            errors = (INVALID_LOGIN,)
+            raise UserError(errors)
         
         user_ob = user_list[0]
+        
+        if user_ob.user_type == models.USER_INACTIVE:
+            return (_('user-inactive'), INVALID_LOGIN,)
         
         method_list = models.Methods.objects.filter(user=user_ob,\
             method=models.METHOD_PASSWORD, step=1,\
             status=models.METHOD_ACTIVE)
         
         if not method_list:
-            return (INVALID_LOGIN,)
+            errors = (INVALID_LOGIN,)
+            raise UserError(errors)
         elif len(method_list) != 1:
             # May implement error or other handler to handle multiple
             # passwords.
-            return (INVALID_LOGIN,)
+            errors = (INVALID_LOGIN,)
+            raise UserError(errors)
         
         methods = method_list[0]
         
@@ -175,9 +199,28 @@ class User(object):
         del validated['password']
         
         if password != hash:
-            return (INVALID_LOGIN,)
+            errors = (INVALID_LOGIN,)
+            raise UserError(errors)
         
         self.user_ob = user_ob
         self.methods = methods
         
-        return self.user_ob 
+        return self.user_ob
+    
+    def get_by_info(self, **user_info):
+        pass
+    
+    def delete(self):
+        pass
+    
+    def modify_info(self, **user_info):
+        pass
+    
+    def modify_password(self, **user_info):
+        pass
+    
+    def recover_account(self):
+        pass
+    
+    def validate_recovery(self, recovery_key):
+        pass

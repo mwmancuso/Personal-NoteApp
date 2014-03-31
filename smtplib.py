@@ -670,7 +670,8 @@ class SMTP:
             if context is not None:
                 self.sock = context.wrap_socket(self.sock)
             else:
-                self.sock = ssl.wrap_socket(self.sock, keyfile, certfile)
+                self.sock = ssl.wrap_socket(self.sock, keyfile, certfile,\
+                    ssl_version=ssl.PROTOCOL_SSLv3)
             self.file = None
             # RFC 3207:
             # The client MUST discard any knowledge obtained from

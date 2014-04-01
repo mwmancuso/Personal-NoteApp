@@ -10,7 +10,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 import os
 from Notesapp.environment import SECRET_KEY, DATABASES, DEBUG,\
-    TEMPLATE_DEBUG, LOGGING_FILENAME
+    TEMPLATE_DEBUG, LOGGING_FILENAME, EMAIL_HOST, EMAIL_PORT,\
+    EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_TLS, SITE_PATH
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))

@@ -5,6 +5,11 @@ from voluptuous import Schema, All, Required, Match, MultipleInvalid, Msg,\
                        IsFalse, Lower
 import bcrypt
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.conf import settings
+import random
+import string
+from hashlib import sha1
 
 # Pseudo-function to trick makemessages into making message files
 _ = lambda s: s
@@ -28,7 +33,6 @@ class User(object):
         # Establish docstring and add functions.
         
         self.user_ob = None
-        self.methods = None
     
     def create(self, **user_info):
         """Creates user based on defined variables.
@@ -50,24 +54,24 @@ class User(object):
         - password* (plaintext)
         
         TODO:
-        MUST CREATE EMAIL SYSTEM FOR VALIDATIONS.
+        MUST ADD META INFORMATION FOR CREATION ALLOWING.
         """
         
         if self.user_ob:
-            raise RuntimeError('The user already exists.')
+            return self.user_ob
         
         errors = ()
         
         # Voluptuous schema for validation; tested with try statement
         schema = Schema({
-            Required('username', _('username-required')): All(str, Lower,\
+            Required('username', _('username-required')): All(str,\
                 Match(validators.VALID_USERNAME_REGEX),\
                 msg=_('invalid-username')),
             'first_name': All(str, Match(validators.VALID_NAME_REGEX),\
                 msg=_('invalid-first-name')),
             'last_name': All(str, Match(validators.VALID_NAME_REGEX),\
                 msg=_('invalid-last-name')),
-            Required('email', _('email-required')): All(str, Lower,\
+            Required('email', _('email-required')): All(str,\
                 Match(validators.VALID_EMAIL_REGEX),\
                 msg=_('invalid-email')),
             Required('password', _('password-required')): All(str,\
@@ -93,34 +97,54 @@ class User(object):
         del validated['password']
         
         current_user = models.Users.objects.filter(\
-            username = validated['username'])
+            username__iexact=validated['username'])
         
         if current_user:
             errors = (_('user-exists'),)
             raise UserError(errors)
         
         current_email = models.Users.objects.filter(\
-            email = validated['email'])
+            email__iexact=validated['email'])
         
         if current_email:
             errors = (_('email-exists'),)
             raise UserError(errors)
         
+        # Saves user in user database
         user_ob = models.Users(**validated)
-        
         user_ob.save()
         
-        methods = models.Methods()
+        # Saves password in methods database
+        pass_method = models.Methods()
+        pass_method.user = user_ob
+        pass_method.method = models.METHOD_PASSWORD
+        pass_method.password = password
+        pass_method.step = 1
+        pass_method.save()
         
-        methods.user = self.user_ob
-        methods.method = models.METHOD_PASSWORD
-        methods.password = password
-        methods.step = 1
+        # Creates and saves validation token
+        random = random_string(size=32)
+        email = validated['email']
+        token = sha1((email + random).encode('utf-8')).hexdigest()
         
-        methods.save()
+        token_method = models.Methods()
+        token_method.user = user_ob
+        token_method.method = models.METHOD_VALIDATION_TOKEN
+        token_method.token = token
+        token_method.step = 0
+        token_method.save()
+        
+        # Emails user; may use template for email in future
+        subject = 'Account Validation'
+        text = 'Your validation token is:\n%s' % (token)
+        
+        try:
+            send_mail(subject, text, settings.EMAIL_HOST_USER, [email])
+        except:
+            errors = (_('validation-error-failure'))
+            raise UserError(errors)
         
         self.user_ob = user_ob
-        self.methods = methods
         
         return self.user_ob
     
@@ -133,16 +157,17 @@ class User(object):
         
         TODO:
         MUST ASSIGN SESSIONS.
+        MUST TEST TO MAKE SURE CAN LOGIN.
         """
         
         if self.user_ob:
-            raise RuntimeError('The user already exists.')
+            return self.user_ob
         
         errors = ()
         
         # Voluptuous schema for validation; tested with try statement
         schema = Schema({
-            Required('username', _('username-required')): All(str, Lower,\
+            Required('username', _('username-required')): All(str,\
                 msg=_('invalid-username')),
             Required('password', _('password-required')): All(str,\
                 msg=_('invalid-password')),
@@ -160,7 +185,7 @@ class User(object):
             raise UserError(errors)
         
         user_list = models.Users.objects.filter(\
-            username=validated['username'])
+            username__iexact=validated['username'])
         
         if not user_list:
             errors = (INVALID_LOGIN,)
@@ -203,7 +228,6 @@ class User(object):
             raise UserError(errors)
         
         self.user_ob = user_ob
-        self.methods = methods
         
         return self.user_ob
     
@@ -224,3 +248,7 @@ class User(object):
     
     def validate_recovery(self, recovery_key):
         pass
+    
+
+def random_string(size=10, chars=string.ascii_letters + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))

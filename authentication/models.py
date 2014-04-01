@@ -2,11 +2,11 @@ from django.db import models
 
 # Static variables for clarity in database
 METHOD_PASSWORD = 0
+METHOD_VALIDATION_TOKEN = 1
 METHOD_ACTIVE = 0
 METHOD_INACTIVE = 1
-USER_STANDARD = 0
-USER_ADMIN = 1
-USER_INACTIVE = -1
+USER_VALIDATED = 1
+USER_NOT_VALIDATED = 0
 
 class Users(models.Model):
     """Database model for user storage.
@@ -27,6 +27,7 @@ class Users(models.Model):
     last_access = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True, auto_now_add=True)
+    validated = models.IntegerField(default=0)
     
     def __str__(self):
         return self.username
@@ -37,6 +38,7 @@ class Methods(models.Model):
     
     method: integer representing method type:
         0: password
+        1: validation token
     password/token: only one may be defined; password hashes are often
             shorter and quicker and are not arbitrary.
     step: for multi-step authentication, important to be defined.

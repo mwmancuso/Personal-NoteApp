@@ -3,8 +3,8 @@ from django.db import models
 # Static variables for clarity in database
 METHOD_PASSWORD = 0
 METHOD_VALIDATION_TOKEN = 1
-METHOD_ACTIVE = 0
-METHOD_INACTIVE = 1
+METHOD_ACTIVE = 1
+METHOD_INACTIVE = 0
 USER_VALIDATED = 1
 USER_NOT_VALIDATED = 0
 
@@ -45,15 +45,15 @@ class Methods(models.Model):
         Numbered by number of step, i.e. 1 for first step.
     status: current availability status of the method for the user.
             Currently includes the following:
-        0: active
-        1: inactive
+        1: active
+        0: inactive
     """
     user = models.ForeignKey(Users)
     method = models.IntegerField()
     password = models.CharField(max_length=60, blank=True)
     token = models.TextField(blank=True)
     step = models.IntegerField()
-    status = models.IntegerField(default=0)
+    status = models.IntegerField(default=1)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=True)
     last_used = models.DateTimeField(null=True)

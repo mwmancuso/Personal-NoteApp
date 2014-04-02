@@ -386,9 +386,9 @@ The development checklist is intended to be in as much order as it can be. Some 
  * ~~Database structure~~
  * Login system methods
  * - Functions:
- * -- Create user
- * --- Emails for validation
- * -- Check if user exists (separate for potential real-time status)
+ * -- ~~Create user~~
+ * --- ~~Emails for validation~~
+ * -- Get by info
  * -- Delete user
  * --- May fail if linked data is still linked
  * --- Data should be archived or linked to dummy user beforehand
@@ -410,6 +410,7 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - Connected accounts
  * - ~~Ambiguous error pages~~
  * - Email system with validation
+ * - Token system for alpha and beta sign-ups
  * Session management
  * Brute force protection
  * Admin section

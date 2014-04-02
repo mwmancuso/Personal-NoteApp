@@ -70,7 +70,7 @@ class Tokens(models.Model):
     """
     
     purpose = models.CharField(max_length=30)
-    token = models.CharField(max_length=50)
+    token = models.CharField(max_length=50, unique=True)
     exhausted = models.BooleanField(default=False)
     expiration = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)

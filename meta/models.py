@@ -4,6 +4,7 @@ DEFAULT_DATA = {
     'new-users': {
         # 1 for yes, 0 for no
         'setting': 1,
+        # If no, empty for no token and "token" for token creation
         'data': '',
     },
     'user-login': {
@@ -21,6 +22,7 @@ class DataManager(models.Manager):
         
         for tag in DEFAULT_DATA.keys():
             object = self.get_or_create(tag=tag, defaults=DEFAULT_DATA[tag])
+
 
 class Data(models.Model):
     """Model for meta-data. Needed for system-wide key/value pairs.

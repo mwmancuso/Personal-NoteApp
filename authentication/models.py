@@ -5,8 +5,7 @@ METHOD_PASSWORD = 0
 METHOD_VALIDATION_TOKEN = 1
 METHOD_ACTIVE = 1
 METHOD_INACTIVE = 0
-USER_VALIDATED = 1
-USER_NOT_VALIDATED = 0
+TOKEN_CREATE_USER = 'create-user'
 
 class Users(models.Model):
     """Database model for user storage.
@@ -19,6 +18,7 @@ class Users(models.Model):
         0: standard user
         1: admin user
     """
+    
     username = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=30, blank=True)
     last_name = models.CharField(max_length=30, blank=True)
@@ -27,7 +27,7 @@ class Users(models.Model):
     last_access = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True, auto_now_add=True)
-    validated = models.IntegerField(default=0)
+    validated = models.BooleanField(default=False)
     
     def __str__(self):
         return self.username
@@ -48,6 +48,7 @@ class Methods(models.Model):
         1: active
         0: inactive
     """
+    
     user = models.ForeignKey(Users)
     method = models.IntegerField()
     password = models.CharField(max_length=60, blank=True)
@@ -57,6 +58,19 @@ class Methods(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=True)
     last_used = models.DateTimeField(null=True)
+    expiration = models.DateTimeField(null=True)
     
     def __str__(self):
         return str(self.method)
+
+class Tokens(models.Model):
+    """Model for tokens used throughout project.
+    
+    Tokens must be either letters or numbers, that's it.
+    """
+    
+    purpose = models.CharField(max_length=30)
+    token = models.CharField(max_length=50)
+    exhausted = models.BooleanField(default=False)
+    expiration = models.DateTimeField(null=True)
+    created = models.DateTimeField(auto_now_add=True)

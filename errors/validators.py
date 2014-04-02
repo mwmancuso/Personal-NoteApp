@@ -32,7 +32,7 @@ import re
 # Validation regex constants
 VALID_USERNAME_REGEX = re.compile(r'^[A-Za-z0-9_]{1,50}$')
 VALID_NAME_REGEX = re.compile(r'^[A-Za-z0-9]{1,30}$')
-VALID_EMAIL_REGEX = re.compile('^(?=[^@]+@[^@]+(\.[^@]+)+).{1,75}$')
+VALID_EMAIL_REGEX = re.compile(r'^(?=[^@]+@[^@]+(\.[^@]+)+).{1,75}$')
 VALID_PASSWORD_REGEX = re.compile(r"""
     ^
      (?P<phrase>     # Alternate condition: matches any character...
@@ -68,6 +68,7 @@ VALID_PASSWORD_REGEX = re.compile(r"""
      {8,50}        # Asserts that password is 8-50 characters
     $
 """, re.VERBOSE)
+VALID_TOKEN_REGEX = re.compile(r'^[A-Za-z0-9]{1,50}$')
 
 def list_errors(multiple_invalid_exception):
     """Helper function that extracts errors from MultipleInvalid.

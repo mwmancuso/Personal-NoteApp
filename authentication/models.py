@@ -1,11 +1,12 @@
 from django.db import models
+import datetime
 
 # Static variables for clarity in database
 METHOD_PASSWORD = 0
 METHOD_VALIDATION_TOKEN = 1
 METHOD_ACTIVE = 1
 METHOD_INACTIVE = 0
-TOKEN_CREATE_USER = 'create-user'
+TOKEN_NEW_USER = 'new-user'
 
 class Users(models.Model):
     """Database model for user storage.
@@ -24,6 +25,7 @@ class Users(models.Model):
     last_name = models.CharField(max_length=30, blank=True)
     email = models.EmailField(max_length=75)
     user_type = models.IntegerField(default=0)
+    active = models.BooleanField(default=True)
     last_access = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True, auto_now_add=True)
@@ -74,3 +76,10 @@ class Tokens(models.Model):
     exhausted = models.BooleanField(default=False)
     expiration = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
+    
+    def expired(self):
+        # Returns true if no expiration date
+        if not self.expiration:
+            return False
+        
+        return datetime.datetime.now() < self.expiration

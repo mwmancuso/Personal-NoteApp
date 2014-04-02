@@ -1,4 +1,5 @@
 from authentication import models
+from meta.models import Data
 from errors import validators
 from errors.exceptions import UserError
 from voluptuous import Schema, All, Required, Match, MultipleInvalid, Msg,\
@@ -52,18 +53,26 @@ class User(object):
         - last_name
         - email*
         - password* (plaintext)
-        
-        TODO:
-        MUST ADD META INFORMATION FOR CREATION ALLOWING.
         """
         
         if self.user_ob:
             return self.user_ob
         
-        errors = ()
+        errors = []
+        token_required = False
+        
+        # Check to see if user creation is enabled
+        new_users = Data.objects.filter(tag='new-users')[0]
+        
+        if new_users.setting == 0:
+            if new_users.data == 'token':
+                token_required = True
+            else:
+                errors = (_('creation-disabled'),)
+                raise UserError(errors)
         
         # Voluptuous schema for validation; tested with try statement
-        schema = Schema({
+        schema_dict = {
             Required('username', _('username-required')): All(str,\
                 Match(validators.VALID_USERNAME_REGEX),\
                 msg=_('invalid-username')),
@@ -76,7 +85,13 @@ class User(object):
                 msg=_('invalid-email')),
             Required('password', _('password-required')): All(str,\
                 validators.Password, msg=_('invalid-password')),
-        })
+        }
+        
+        if token_required:
+            schema_dict[Required('token', _('token-required'))] = All(str,\
+                Match(validators.VALID_TOKEN_REGEX), msg=_('invalid-token'))
+        
+        schema = Schema(schema_dict)
         
         try:
             validated = schema(user_info)
@@ -89,11 +104,37 @@ class User(object):
         if errors:
             raise UserError(errors)
         
+        # Checks to see if token is in database if required
+        if token_required:
+            token_list = models.Tokens.objects.filter(\
+                purpose=models.TOKEN_NEW_USER, token=validated['token'])
+            
+            if len(token_list) != 1:
+                errors = (_('no-such-token'),)
+                raise UserError(errors)
+            
+            token_ob = token_list[0]
+            
+            if token_ob.exhausted:
+                errors.append(_('token-exhausted'),)
+            
+            if token_ob.expired():
+                errors.append(_('token-expired'),)
+            
+            if errors:
+                raise UserError(tuple(errors))
+            
+            token_ob.exhausted = True
+            token_ob.save()
+            
+            # Prevents entry of token into User object
+            del validated['token']
+        
         # Hashes password using bcrypt
         password = bcrypt.hashpw(validated['password'].encode('utf-8'),\
             bcrypt.gensalt(SALT_ROUNDS))
         
-        # Deletes password from info so it doesn't get inserted here
+        # Deletes password from info so it doesn't get inserted on creation
         del validated['password']
         
         current_user = models.Users.objects.filter(\
@@ -141,7 +182,7 @@ class User(object):
         try:
             send_mail(subject, text, settings.EMAIL_HOST_USER, [email])
         except:
-            errors = (_('validation-error-failure'))
+            errors = (_('validation-email-failure'),)
             raise UserError(errors)
         
         self.user_ob = user_ob
@@ -157,13 +198,19 @@ class User(object):
         
         TODO:
         MUST ASSIGN SESSIONS.
-        MUST TEST TO MAKE SURE CAN LOGIN.
         """
         
         if self.user_ob:
             return self.user_ob
         
-        errors = ()
+        errors = []
+        
+        # Check to see if user login is enabled
+        new_users = Data.objects.filter(tag='user-login')[0]
+        
+        if new_users.setting == 0:
+            errors = (_('login-disabled'),)
+            raise UserError(errors)
         
         # Voluptuous schema for validation; tested with try statement
         schema = Schema({
@@ -199,7 +246,7 @@ class User(object):
         
         user_ob = user_list[0]
         
-        if user_ob.user_type == models.USER_INACTIVE:
+        if not user_ob.active:
             return (_('user-inactive'), INVALID_LOGIN,)
         
         method_list = models.Methods.objects.filter(user=user_ob,\
@@ -251,4 +298,10 @@ class User(object):
     
 
 def random_string(size=10, chars=string.ascii_letters + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
+    return ''.join(random.choice(chars) for i in range(size))
+
+def generate_token():
+    pass
+
+def modify_meta_data():
+    pass

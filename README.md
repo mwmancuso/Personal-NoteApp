@@ -385,13 +385,32 @@ The development checklist is intended to be in as much order as it can be. Some 
 * **Login/account system** [v1]
  * ~~Database structure~~
  * Login system methods
- * - Password protection (Salt, CSPRNG, bcrypt)
- * - Password complexity checking
- * -- http://its.ucsc.edu/policies/password.html
- * -- May be appended later
+ * - Functions:
+ * -- ~~Create user~~
+ * --- ~~Emails for validation~~
+ * -- Get by info
+ * -- Delete user
+ * --- May fail if linked data is still linked
+ * --- Data should be archived or linked to dummy user beforehand
+ * -- Modify user
+ * --- Mutable field list
+ * -- Change password
+ * -- Recover password
+ * -- Send validation email
+ * -- Login user using password
+ * -- Validate user using email link
+ * -- Second step login
+ * -- Create session
+ * -- Retrieve session
+ * - ~~Password protection (Salt, CSPRNG, bcrypt)~~
+ * - ~~Password complexity checking~~
+ * -- ~~http://its.ucsc.edu/policies/password.html~~
+ * -- ~~May be appended later~~
  * - Password recovery
  * - Connected accounts
- * - Ambiguous error pages
+ * - ~~Ambiguous error pages~~
+ * - Email system with validation
+ * - Token system for alpha and beta sign-ups
  * Session management
  * Brute force protection
  * Admin section
@@ -405,6 +424,8 @@ The development checklist is intended to be in as much order as it can be. Some 
 * In-house module API [v1]
 * Backend system [v1]
 * In-house modules (list should be established at this point) [v1]
+* Move to DigitalOcean [v1]
+* Local email system [v1]
 * Simple transfer print-out sheets [v1]
 * Project name [v1]
 * User tutorial [v1]

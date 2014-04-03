@@ -33,7 +33,10 @@ class User(object):
     def __init__(self):
         # Establish docstring and add functions.
         
-        self.user_ob = None
+        self.user_obs = None
+    
+    def get_user_objects(self):
+        return self.user_obs
     
     def create(self, **user_info):
         """Creates user based on defined variables.
@@ -53,10 +56,11 @@ class User(object):
         - last_name
         - email*
         - password* (plaintext)
+        - token - required if new-user setting is set to token
         """
         
-        if self.user_ob:
-            return self.user_ob
+        if self.user_obs:
+            return self.user_obs
         
         errors = []
         token_required = False
@@ -137,12 +141,8 @@ class User(object):
         # Deletes password from info so it doesn't get inserted on creation
         del validated['password']
         
-        current_user = models.Users.objects.filter(\
+        current_user = models.Users.objects.get(\
             username__iexact=validated['username'])
-        
-        if current_user:
-            errors = (_('user-exists'),)
-            raise UserError(errors)
         
         current_email = models.Users.objects.filter(\
             email__iexact=validated['email'])
@@ -185,9 +185,9 @@ class User(object):
             errors = (_('validation-email-failure'),)
             raise UserError(errors)
         
-        self.user_ob = user_ob
+        self.user_obs = [user_ob]
         
-        return self.user_ob
+        return self.user_obs
     
     def login_password(self, **user_info):
         """Handler to login via password authentication.
@@ -198,10 +198,11 @@ class User(object):
         
         TODO:
         MUST ASSIGN SESSIONS.
+        MUST UPDATE ACCESS TIME (SESSIONS MAY DO THIS).
         """
         
-        if self.user_ob:
-            return self.user_ob
+        if self.user_obs:
+            return self.user_obs
         
         errors = []
         
@@ -231,20 +232,12 @@ class User(object):
         if errors:
             raise UserError(errors)
         
-        user_list = models.Users.objects.filter(\
-            username__iexact=validated['username'])
-        
-        if not user_list:
+        try:
+            user_ob = models.Users.objects.get(\
+                username__iexact=validated['username'])
+        except models.Users.DoesNotExist:
             errors = (INVALID_LOGIN,)
             raise UserError(errors)
-            # May implement delay here to prevent username extracting
-        elif len(user_list) != 1:
-            # May cause another error here; only one response should be
-            # returned.
-            errors = (INVALID_LOGIN,)
-            raise UserError(errors)
-        
-        user_ob = user_list[0]
         
         if not user_ob.active:
             return (_('user-inactive'), INVALID_LOGIN,)
@@ -274,28 +267,174 @@ class User(object):
             errors = (INVALID_LOGIN,)
             raise UserError(errors)
         
-        self.user_ob = user_ob
+        self.user_obs = [user_ob]
         
-        return self.user_ob
+        return self.user_obs
     
-    def get_by_info(self, **user_info):
-        pass
+    def get_by_info(self, multiple=False, **user_info):
+        """Retrieves user object found by given data.
+        
+        Assigns to user_obs.
+        If multiple is true, assigns multiple selections. Limits to one
+        otherwise.
+        All other keywords passed directly to model filter.
+        """
+        
+        if self.user_obs:
+            return self.user_obs
+        
+        errors = []
+        
+        user_list = models.Users.objects.filter(**user_info)
+        
+        if not multiple:
+            if len(user_list) > 1:
+                errors = (_('multiple-results'),)
+                raise UserError('multiple-results')
+        
+        if not user_list:
+            errors = (_('no-results'),)
+            raise UserError(errors)
+        
+        self.user_obs = user_list
+        
+        return self.user_obs
     
     def delete(self):
-        pass
+        """Deletes users in user_obs.
+        
+        Use cautiously, and only for cron cleanups or admin removals.
+        All related data must be archived before running this command,
+        with an exception for methods, which will be cascaded.
+        """
+        
+        if not self.user_obs:
+            return False
+        
+        errors = []
+        
+        for user_ob in user_obs:
+            try:
+                user_ob.delete()
+            except ProtectedError:
+                errors = (_('associated-data-present'))
+                raise UserError(errors)
+        
+        return True
+    
+    def deactivate(self):
+        """Preferred method for "deletion." Sets user to deactivated.
+        
+        Also deactivates all methods.
+        
+        This may be paired with a cron job to automatically delete
+        users after being deactivated for a certain amount of time.
+        Cron job may also remove user after archiving data. Locks user
+        out of recreation for the time being.
+        
+        For now, all deactivated accounts remain deactivated.
+        """
+        
+        if not self.user_obs:
+            return False
+        
+        errors = []
+        
+        for user_ob in user_obs:
+            user_ob.active = False
+            user_ob.save()
+            
+            method_list = models.Methods.objects.filter(user=user_ob)
+            method_list.update(status=models.METHOD_INACTIVE)
+        
+        return True
+    
+    def activate(self):
+        """Merely opposite of deactivate. Refer to deactivate."""
+        
+        if not self.user_obs:
+            return False
+        
+        errors = []
+        
+        for user_ob in user_obs:
+            user_ob.active = False
+            user_ob.save()
+            
+            method_list = models.Methods.objects.filter(user=user_ob)
+            method_list.update(status=models.METHOD_ACTIVE)
+        
+        return True
+    
+    def set_type(self, type):
+        """Sets type of user. Recommended to use constants in model."""
+        
+        if not self.user_obs:
+            return False
+        
+        errors = []
+        
+        for user_ob in user_obs:
+            user_ob.user_type = type
+        
+        return True
     
     def modify_info(self, **user_info):
-        pass
+        """Modifies user information for users.
+        
+        Note that this only allows modification of user details, such
+        as username, names and email. It does not allow modification of
+        settings such as user_type. For that, specific functions must
+        be used.
+        """
+        
+        if not user_obs:
+            return False
+        
+        errors = []
+        
+        schema = Schema({
+            'username': All(str, Match(validators.VALID_USERNAME_REGEX),\
+                msg=_('invalid-username')),
+            'first_name': All(str, Match(validators.VALID_NAME_REGEX),\
+                msg=_('invalid-first-name')),
+            'last_name': All(str, Match(validators.VALID_NAME_REGEX),\
+                msg=_('invalid-last-name')),
+            'email': All(str, Match(validators.VALID_EMAIL_REGEX),\
+                msg=_('invalid-email')),
+        })
+        
+        try:
+            validated = schema(user_info)
+        except MultipleInvalid as error:
+            errors = validators.list_errors(error)
+        
+        if errors:
+            raise UserError(errors)
+        
+        for user_ob in user_obs:
+            # Creates new queryset to update data, since model
+            # model instances cannot handle it on their own
+            user_queryset = models.Users.objects.get(pk=user_ob.pk)
+            user_queryset.update(**validated)
+        
+        return True
     
-    def modify_password(self, **user_info):
+    def modify_password(self, check=True, old=None, new):
+        """Optionally checks and sets password for user_obs."""
         pass
     
     def recover_account(self):
+        """Creates recovery email token and sends it to user."""
         pass
     
-    def validate_recovery(self, recovery_key):
+    def validate_recovery(self, recovery_token):
+        """Validates recovery email token against methods."""
         pass
     
+    def validate_account(self, validation_token):
+        """Validates account based on emailed token."""
+        pass
 
 def random_string(size=10, chars=string.ascii_letters + string.digits):
     return ''.join(random.choice(chars) for i in range(size))

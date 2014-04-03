@@ -2,6 +2,8 @@ from django.db import models
 import datetime
 
 # Static variables for clarity in database
+USER_STANDARD = 0
+USER_ADMIN = 1
 METHOD_PASSWORD = 0
 METHOD_VALIDATION_TOKEN = 1
 METHOD_ACTIVE = 1
@@ -51,7 +53,7 @@ class Methods(models.Model):
         0: inactive
     """
     
-    user = models.ForeignKey(Users)
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
     method = models.IntegerField()
     password = models.CharField(max_length=60, blank=True)
     token = models.TextField(blank=True)

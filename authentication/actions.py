@@ -1,16 +1,16 @@
-from authentication import models
-from meta.models import Data
-from errors import validators
-from errors.exceptions import UserError
-from voluptuous import Schema, All, Required, Match, MultipleInvalid, Msg,\
-                       IsFalse, Lower
+from voluptuous import Schema, All, Required, Match, MultipleInvalid
 import bcrypt
-from django.db.models import Q
 from django.core.mail import send_mail
 from django.conf import settings
 import random
 import string
-from hashlib import sha1
+import hashlib
+
+from authentication import models
+from meta.models import Data
+from errors import validators
+from errors.exceptions import UserError
+
 
 # Pseudo-function to trick makemessages into making message files
 _ = lambda s: s
@@ -19,6 +19,7 @@ _ = lambda s: s
 SALT_ROUNDS = 13 # Number of Bcrypt salt rounds for encryption
 INVALID_LOGIN = _('invalid-login') # Defined to provide ambiguous response
 
+# noinspection PyMethodMayBeStatic,PyMethodMayBeStatic,PyMethodMayBeStatic,PyMethodMayBeStatic,PyUnusedLocal
 class User(object):
     """Provides wrapper method for handling users.
     
@@ -33,7 +34,7 @@ class User(object):
     def __init__(self):
         # Establish docstring and add functions.
         
-        self.user_obs = None
+        self.user_obs = ()
     
     def get_user_objects(self):
         return self.user_obs
@@ -58,11 +59,12 @@ class User(object):
         - password* (plaintext)
         - token - required if new-user setting is set to token
         """
-        
+
         if self.user_obs:
             return self.user_obs
         
         errors = []
+        validated = dict()
         token_required = False
         
         # Check to see if user creation is enabled
@@ -77,22 +79,22 @@ class User(object):
         
         # Voluptuous schema for validation; tested with try statement
         schema_dict = {
-            Required('username', _('username-required')): All(str,\
-                Match(validators.VALID_USERNAME_REGEX),\
+            Required('username', _('username-required')): All(str,
+                Match(validators.VALID_USERNAME_REGEX),
                 msg=_('invalid-username')),
-            'first_name': All(str, Match(validators.VALID_NAME_REGEX),\
+            'first_name': All(str, Match(validators.VALID_NAME_REGEX),
                 msg=_('invalid-first-name')),
-            'last_name': All(str, Match(validators.VALID_NAME_REGEX),\
+            'last_name': All(str, Match(validators.VALID_NAME_REGEX),
                 msg=_('invalid-last-name')),
-            Required('email', _('email-required')): All(str,\
-                Match(validators.VALID_EMAIL_REGEX),\
+            Required('email', _('email-required')): All(str,
+                Match(validators.VALID_EMAIL_REGEX),
                 msg=_('invalid-email')),
-            Required('password', _('password-required')): All(str,\
+            Required('password', _('password-required')): All(str,
                 validators.Password, msg=_('invalid-password')),
         }
         
         if token_required:
-            schema_dict[Required('token', _('token-required'))] = All(str,\
+            schema_dict[Required('token', _('token-required'))] = All(str,
                 Match(validators.VALID_TOKEN_REGEX), msg=_('invalid-token'))
         
         schema = Schema(schema_dict)
@@ -110,7 +112,7 @@ class User(object):
         
         # Checks to see if token is in database if required
         if token_required:
-            token_list = models.Tokens.objects.filter(\
+            token_list = models.Tokens.objects.filter(
                 purpose=models.TOKEN_NEW_USER, token=validated['token'])
             
             if len(token_list) != 1:
@@ -135,16 +137,20 @@ class User(object):
             del validated['token']
         
         # Hashes password using bcrypt
-        password = bcrypt.hashpw(validated['password'].encode('utf-8'),\
+        password = bcrypt.hashpw(validated['password'].encode('utf-8'),
             bcrypt.gensalt(SALT_ROUNDS))
         
         # Deletes password from info so it doesn't get inserted on creation
         del validated['password']
         
-        current_user = models.Users.objects.get(\
+        current_user = models.Users.objects.filter(
             username__iexact=validated['username'])
-        
-        current_email = models.Users.objects.filter(\
+
+        if current_user:
+            errors = (_('user-exists'),)
+            raise UserError(errors)
+
+        current_email = models.Users.objects.filter(
             email__iexact=validated['email'])
         
         if current_email:
@@ -164,9 +170,9 @@ class User(object):
         pass_method.save()
         
         # Creates and saves validation token
-        random = random_string(size=32)
+        random_salt = random_string(size=32)
         email = validated['email']
-        token = sha1((email + random).encode('utf-8')).hexdigest()
+        token = hashlib.sha1((email + random_salt).encode('utf-8')).hexdigest()
         
         token_method = models.Methods()
         token_method.user = user_ob
@@ -177,7 +183,7 @@ class User(object):
         
         # Emails user; may use template for email in future
         subject = 'Account Validation'
-        text = 'Your validation token is:\n%s' % (token)
+        text = 'Your validation token is:\n%s' % token
         
         try:
             send_mail(subject, text, settings.EMAIL_HOST_USER, [email])
@@ -205,6 +211,7 @@ class User(object):
             return self.user_obs
         
         errors = []
+        validated = dict()
         
         # Check to see if user login is enabled
         new_users = Data.objects.filter(tag='user-login')[0]
@@ -215,9 +222,9 @@ class User(object):
         
         # Voluptuous schema for validation; tested with try statement
         schema = Schema({
-            Required('username', _('username-required')): All(str,\
+            Required('username', _('username-required')): All(str,
                 msg=_('invalid-username')),
-            Required('password', _('password-required')): All(str,\
+            Required('password', _('password-required')): All(str,
                 msg=_('invalid-password')),
         })
         
@@ -233,17 +240,17 @@ class User(object):
             raise UserError(errors)
         
         try:
-            user_ob = models.Users.objects.get(\
+            user_ob = models.Users.objects.get(
                 username__iexact=validated['username'])
         except models.Users.DoesNotExist:
             errors = (INVALID_LOGIN,)
             raise UserError(errors)
         
         if not user_ob.active:
-            return (_('user-inactive'), INVALID_LOGIN,)
+            return _('user-inactive'), INVALID_LOGIN,
         
-        method_list = models.Methods.objects.filter(user=user_ob,\
-            method=models.METHOD_PASSWORD, step=1,\
+        method_list = models.Methods.objects.filter(user=user_ob,
+            method=models.METHOD_PASSWORD, step=1,
             status=models.METHOD_ACTIVE)
         
         if not method_list:
@@ -257,13 +264,13 @@ class User(object):
         
         methods = method_list[0]
         
-        hash = methods.password.encode('utf-8')
-        password = bcrypt.hashpw(validated['password'].encode('utf-8'), hash)
+        password_hash = methods.password.encode('utf-8')
+        password = bcrypt.hashpw(validated['password'].encode('utf-8'), password_hash)
         
         # Deletes original password to prevent later misuse
         del validated['password']
         
-        if password != hash:
+        if password != password_hash:
             errors = (INVALID_LOGIN,)
             raise UserError(errors)
         
@@ -313,10 +320,10 @@ class User(object):
         
         errors = []
         
-        for user_ob in user_obs:
+        for user_ob in self.user_obs:
             try:
                 user_ob.delete()
-            except ProtectedError:
+            except models.Users.ProtectedError:
                 errors = (_('associated-data-present'))
                 raise UserError(errors)
         
@@ -340,7 +347,7 @@ class User(object):
         
         errors = []
         
-        for user_ob in user_obs:
+        for user_ob in self.user_obs:
             user_ob.active = False
             user_ob.save()
             
@@ -357,7 +364,7 @@ class User(object):
         
         errors = []
         
-        for user_ob in user_obs:
+        for user_ob in self.user_obs:
             user_ob.active = False
             user_ob.save()
             
@@ -366,7 +373,7 @@ class User(object):
         
         return True
     
-    def set_type(self, type):
+    def set_type(self, user_type):
         """Sets type of user. Recommended to use constants in model."""
         
         if not self.user_obs:
@@ -374,8 +381,8 @@ class User(object):
         
         errors = []
         
-        for user_ob in user_obs:
-            user_ob.user_type = type
+        for user_ob in self.user_obs:
+            user_ob.user_type = user_type
         
         return True
     
@@ -388,19 +395,20 @@ class User(object):
         be used.
         """
         
-        if not user_obs:
+        if not self.user_obs:
             return False
         
         errors = []
+        validated = dict()
         
         schema = Schema({
-            'username': All(str, Match(validators.VALID_USERNAME_REGEX),\
+            'username': All(str, Match(validators.VALID_USERNAME_REGEX),
                 msg=_('invalid-username')),
-            'first_name': All(str, Match(validators.VALID_NAME_REGEX),\
+            'first_name': All(str, Match(validators.VALID_NAME_REGEX),
                 msg=_('invalid-first-name')),
-            'last_name': All(str, Match(validators.VALID_NAME_REGEX),\
+            'last_name': All(str, Match(validators.VALID_NAME_REGEX),
                 msg=_('invalid-last-name')),
-            'email': All(str, Match(validators.VALID_EMAIL_REGEX),\
+            'email': All(str, Match(validators.VALID_EMAIL_REGEX),
                 msg=_('invalid-email')),
         })
         
@@ -412,7 +420,7 @@ class User(object):
         if errors:
             raise UserError(errors)
         
-        for user_ob in user_obs:
+        for user_ob in self.user_obs:
             # Creates new queryset to update data, since model
             # model instances cannot handle it on their own
             user_queryset = models.Users.objects.get(pk=user_ob.pk)
@@ -420,7 +428,7 @@ class User(object):
         
         return True
     
-    def modify_password(self, check=True, old=None, new):
+    def modify_password(self, new, check=True, old=None):
         """Optionally checks and sets password for user_obs."""
         pass
     
@@ -437,6 +445,7 @@ class User(object):
         pass
 
 def random_string(size=10, chars=string.ascii_letters + string.digits):
+    # noinspection PyUnusedLocal
     return ''.join(random.choice(chars) for i in range(size))
 
 def generate_token():

@@ -21,7 +21,7 @@ class DataManager(models.Manager):
         """Populates database with data given in DEFAULT_DATA."""
         
         for tag in DEFAULT_DATA.keys():
-            object = self.get_or_create(tag=tag, defaults=DEFAULT_DATA[tag])
+            self.get_or_create(tag=tag, defaults=DEFAULT_DATA[tag])
 
 
 class Data(models.Model):

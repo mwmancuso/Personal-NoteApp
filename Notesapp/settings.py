@@ -96,7 +96,7 @@ STATIC_ROOT = '/var/www/notes.xpandismo.com/static/'
 # Logging
 # https://docs.djangoproject.com/en/1.6/topics/logging/
 
-if DEBUG == True:
+if DEBUG:
     LOGGING_LEVEL = 'DEBUG'
 else:
     LOGGING_LEVEL = 'WARNING'

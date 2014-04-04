@@ -81,11 +81,11 @@ class UserHandler(object):
         """
         
         verbose_return = {
-            'count': self.get_count()
-            'count_string': self.get_count_string()
-            'originals': self.list_originals()
-            'translations': self.list_translations()
-            'code_translations': self.list_code_translations()
+            'count': self.get_count(),
+            'count_string': self.get_count_string(),
+            'originals': self.list_originals(),
+            'translations': self.list_translations(),
+            'code_translations': self.list_code_translations(),
         }
         
         return verbose_return

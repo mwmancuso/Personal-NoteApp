@@ -445,7 +445,6 @@ class User(object):
         pass
 
 def random_string(size=10, chars=string.ascii_letters + string.digits):
-    # noinspection PyUnusedLocal
     return ''.join(random.choice(chars) for i in range(size))
 
 def generate_token():

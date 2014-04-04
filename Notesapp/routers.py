@@ -7,7 +7,6 @@ app_databases = {
     }
 }
 
-# noinspection PyProtectedMember
 class AppRouter(object):
     """Routes specific apps to specific databases if app is defined."""
     def db_for_read(self, model, **hints):

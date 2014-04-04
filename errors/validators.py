@@ -86,7 +86,6 @@ def list_errors(multiple_invalid_exception):
     return tuple(error_list)
 
 
-# noinspection PyPep8Naming
 @truth
 def Password(password):
     """Validator that checks to make sure a password is valid."""

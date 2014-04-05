@@ -439,6 +439,14 @@ The development checklist is intended to be in as much order as it can be. Some 
 * Complete print-out system with scan-ins [v3]
 * Open general API [v3]
 * Mobile apps [v3]
+ 
+### Development Costs
+
+Development costs are as follows; not that this may include academically free products that are normally paid.
+
+* Github - Free, savings of $7/m
+* DigitalOcean - $50 credit (10 months free)
+* PyCharm - $30, savings of $70
 
 Project Versioning
 ------------------

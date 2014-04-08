@@ -388,17 +388,14 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - Functions:
  * -- ~~Create user~~
  * --- ~~Emails for validation~~
- * -- Get by info
- * -- Delete user
- * --- May fail if linked data is still linked
- * --- Data should be archived or linked to dummy user beforehand
- * -- Modify user
- * --- Mutable field list
- * -- Change password
- * -- Recover password
- * -- Send validation email
- * -- Login user using password
- * -- Validate user using email link
+ * -- ~~Get by info~~
+ * -- ~~Delete user~~
+ * -- ~~Modify user~~
+ * -- ~~Change password~~
+ * -- ~~Recover password~~
+ * -- ~~Send validation email~~
+ * -- ~~Login user using password~~
+ * -- ~~Validate user using email link~~
  * -- Second step login
  * -- Create session
  * -- Retrieve session
@@ -406,11 +403,11 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - ~~Password complexity checking~~
  * -- ~~http://its.ucsc.edu/policies/password.html~~
  * -- ~~May be appended later~~
- * - Password recovery
+ * - ~~Password recovery~~
  * - Connected accounts
  * - ~~Ambiguous error pages~~
- * - Email system with validation
- * - Token system for alpha and beta sign-ups
+ * - ~~Email system with validation~~
+ * - ~~Token system for alpha and beta sign-ups~~
  * Session management
  * Brute force protection
  * Admin section

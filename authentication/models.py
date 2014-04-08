@@ -6,6 +6,7 @@ USER_STANDARD = 0
 USER_ADMIN = 1
 METHOD_PASSWORD = 0
 METHOD_VALIDATION_TOKEN = 1
+METHOD_RECOVERY_TOKEN = 2
 METHOD_ACTIVE = 1
 METHOD_INACTIVE = 0
 TOKEN_NEW_USER = 'new-user'
@@ -63,13 +64,23 @@ class Methods(models.Model):
     updated = models.DateTimeField(auto_now=True, auto_now_add=True)
     last_used = models.DateTimeField(null=True)
     expiration = models.DateTimeField(null=True)
+
+    def expired(self):
+        # Returns true if no expiration date
+        if not self.expiration:
+            return False
+
+        return datetime.datetime.now() < self.expiration
     
     def __str__(self):
         return str(self.method)
 
 class Tokens(models.Model):
     """Model for tokens used throughout project.
-    
+
+    This model is not intended for individual tokens, i.e., email
+    validation tokens. It is meant for system-wide tokens.
+
     Tokens must be either letters or numbers, that's it.
     """
     
@@ -78,10 +89,13 @@ class Tokens(models.Model):
     exhausted = models.BooleanField(default=False)
     expiration = models.DateTimeField(null=True)
     created = models.DateTimeField(auto_now_add=True)
-    
+
     def expired(self):
         # Returns true if no expiration date
         if not self.expiration:
             return False
         
         return datetime.datetime.now() < self.expiration
+
+    def __str__(self):
+        return self.purpose

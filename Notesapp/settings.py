@@ -135,5 +135,10 @@ LOGGING = {
             'level': LOGGING_LEVEL,
             'propogate': False,
         },
+        '': {
+            'handlers': ['file'],
+            'level': LOGGING_LEVEL,
+            'propogate': False,
+        }
     },
 }

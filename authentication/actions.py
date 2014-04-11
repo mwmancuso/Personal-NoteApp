@@ -1,3 +1,6 @@
+"""Must be migrated to models class."""
+
+import pytz
 from voluptuous import Schema, All, Required, Match, MultipleInvalid
 import bcrypt
 from django.core.mail import send_mail
@@ -34,6 +37,8 @@ class User(object):
     
     This class is allowed to be extensible beyond Django if efforts to
     migrate are made.
+
+    Needs audit.
     """
 
     def __init__(self):
@@ -42,6 +47,10 @@ class User(object):
         self.user_obs = ()
 
     def get_user_objects(self):
+        return self.user_obs
+
+    def set_user_objects(self, user_obs):
+        self.user_obs = user_obs
         return self.user_obs
 
     def create(self, **user_info):
@@ -63,9 +72,6 @@ class User(object):
         - email*
         - password* (plaintext)
         - token - required if new-user setting is set to token
-
-        TODO:
-        MUST CHECK EXPIRATION ON TOKEN.
         """
 
         if self.user_obs:
@@ -76,14 +82,14 @@ class User(object):
         token_required = False
 
         # Check to see if user creation is enabled
-        new_users = meta.models.Data.objects.filter(tag='new-users')[0]
+        new_users = meta.models.Data.objects.get(tag='new-users')
 
         if new_users.setting == 0:
             if new_users.data == 'token':
                 token_required = True
             else:
-                errors = (_('creation-disabled'),)
-                raise UserError(errors)
+                errors.append(_('creation-disabled'))
+                raise UserError(*errors)
 
         # Voluptuous schema for validation; tested with try statement
         schema_dict = {
@@ -116,7 +122,7 @@ class User(object):
             errors = validators.list_errors(error)
 
         if errors:
-            raise UserError(errors)
+            raise UserError(*errors)
 
         # Checks to see if token is in database if required
         if token_required:
@@ -124,19 +130,19 @@ class User(object):
                 purpose=models.TOKEN_NEW_USER, token=validated['token'])
 
             if len(token_list) != 1:
-                errors = (_('no-such-token'),)
-                raise UserError(errors)
+                errors.append(_('no-such-token'))
+                raise UserError(*errors)
 
             token_ob = token_list[0]
 
             if token_ob.exhausted:
-                errors.append(_('token-exhausted'),)
+                errors.append(_('token-exhausted'))
 
             if token_ob.expired():
-                errors.append(_('token-expired'),)
+                errors.append(_('token-expired'))
 
             if errors:
-                raise UserError(tuple(errors))
+                raise UserError(*errors)
 
             token_ob.exhausted = True
             token_ob.save()
@@ -155,15 +161,15 @@ class User(object):
             username__iexact=validated['username'])
 
         if current_user:
-            errors = (_('user-exists'),)
-            raise UserError(errors)
+            errors.append(_('user-exists'))
+            raise UserError(*errors)
 
         current_email = models.Users.objects.filter(
             email__iexact=validated['email'])
 
         if current_email:
-            errors = (_('email-exists'),)
-            raise UserError(errors)
+            errors.append(_('email-exists'))
+            raise UserError(*errors)
 
         # Saves user in user database
         user_ob = models.Users(**validated)
@@ -196,8 +202,8 @@ class User(object):
         try:
             send_mail(subject, text, settings.EMAIL_HOST_USER, [email])
         except:
-            errors = (_('validation-email-failure'),)
-            raise UserError(errors)
+            errors.append(_('validation-email-failure'))
+            raise UserError(*errors)
 
         self.user_obs = [user_ob]
 
@@ -219,14 +225,13 @@ class User(object):
             return self.user_obs
 
         errors = []
-        validated = dict()
 
         # Check to see if user login is enabled
-        new_users = meta.models.Data.objects.filter(tag='user-login')[0]
+        new_users = meta.models.Data.objects.get(tag='user-login')
 
         if new_users.setting == 0:
-            errors = (_('login-disabled'),)
-            raise UserError(errors)
+            errors.append(_('login-disabled'))
+            raise UserError(*errors)
 
         # Voluptuous schema for validation; tested with try statement
         schema = Schema({
@@ -243,27 +248,27 @@ class User(object):
             del user_info
         except MultipleInvalid as error:
             errors = validators.list_errors(error)
-
-        if errors:
-            raise UserError(errors)
+            raise UserError(*errors)
 
         try:
             user_ob = models.Users.objects.get(
                 username__iexact=validated['username'])
         except models.Users.DoesNotExist:
-            errors = (INVALID_LOGIN,)
-            raise UserError(errors)
+            errors.append(INVALID_LOGIN)
+            raise UserError(*errors)
 
         if not user_ob.active:
-            return _('user-inactive'), INVALID_LOGIN,
+            errors.append(_('user-inactive'))
+            errors.append(INVALID_LOGIN)
+            raise UserError(*errors)
 
         try:
             method = models.Methods.objects.get(user=user_ob,
                 method=models.METHOD_PASSWORD, step=1,
                 status=models.METHOD_ACTIVE)
         except models.Methods.DoesNotExist:
-            errors = (INVALID_LOGIN,)
-            raise UserError(errors)
+            errors.append(INVALID_LOGIN)
+            raise UserError(*errors)
 
         password_hash = method.password.encode('utf-8')
         password = bcrypt.hashpw(validated['password'].encode('utf-8'),
@@ -273,8 +278,8 @@ class User(object):
         del validated['password']
 
         if password != password_hash:
-            errors = (INVALID_LOGIN,)
-            raise UserError(errors)
+            errors.append(INVALID_LOGIN)
+            raise UserError(*errors)
 
         self.user_obs = [user_ob]
 
@@ -298,12 +303,12 @@ class User(object):
 
         if not multiple:
             if len(user_list) > 1:
-                errors = (_('multiple-results'),)
-                raise UserError('multiple-results')
+                errors.append(_('multiple-results'))
+                raise UserError(*errors)
 
         if not user_list:
-            errors = (_('no-results'),)
-            raise UserError(errors)
+            errors.append(_('no-results'))
+            raise UserError(*errors)
 
         self.user_obs = user_list
 
@@ -326,8 +331,8 @@ class User(object):
             try:
                 user_ob.delete()
             except models.Users.ProtectedError:
-                errors = (_('associated-data-present'))
-                raise UserError(errors)
+                errors.append(_('associated-data-present'))
+                raise UserError(*errors)
 
         return True
 
@@ -367,7 +372,7 @@ class User(object):
         errors = []
 
         for user_ob in self.user_obs:
-            user_ob.active = False
+            user_ob.active = True
             user_ob.save()
 
             method_list = models.Methods.objects.filter(user=user_ob)
@@ -385,6 +390,7 @@ class User(object):
 
         for user_ob in self.user_obs:
             user_ob.user_type = user_type
+            user_ob.save()
 
         return True
 
@@ -420,12 +426,12 @@ class User(object):
             errors = validators.list_errors(error)
 
         if errors:
-            raise UserError(errors)
+            raise UserError(*errors)
 
         for user_ob in self.user_obs:
             # Creates new queryset to update data, since model
             # model instances cannot handle it on their own
-            user_queryset = models.Users.objects.get(pk=user_ob.pk)
+            user_queryset = models.Users.objects.filter(pk=user_ob.pk)
             user_queryset.update(**validated)
 
         return True
@@ -448,9 +454,9 @@ class User(object):
         except MultipleInvalid as error:
             errors = validators.list_errors(error)
 
-        user_ob = self.user_obs[1]
+        user_ob = self.user_obs[0]
 
-        method = models.Methods.get(user=user_ob,
+        method = models.Methods.objects.get(user=user_ob,
             method=models.METHOD_PASSWORD)
 
         if check:
@@ -465,10 +471,13 @@ class User(object):
             if password != password_hash:
                 return False
 
-        password = bcrypt.hashpw(old.encode('utf-8'),
+        password = bcrypt.hashpw(new.encode('utf-8'),
             bcrypt.gensalt(SALT_ROUNDS))
 
         method.password = password
+        method.save()
+
+        return True
 
     def recover_account(self):
         """Creates recovery email token and sends it to user.
@@ -506,8 +515,8 @@ class User(object):
         try:
             send_mail(subject, text, settings.EMAIL_HOST_USER, [email])
         except:
-            errors = (_('recovery-email-failure'),)
-            raise UserError(errors)
+            errors.append(_('recovery-email-failure'))
+            raise UserError(*errors)
 
         return True
 
@@ -516,6 +525,8 @@ class User(object):
 
         if self.user_obs:
             return self.user_obs
+
+        errors = []
 
         schema = Schema({
             Required('username', _('username-required')): All(str,
@@ -530,29 +541,29 @@ class User(object):
             del user_info
         except MultipleInvalid as error:
             errors = validators.list_errors(error)
-            raise UserError(errors)
+            raise UserError(*errors)
 
         try:
             user_ob = models.Users.objects.get(username=validated['username'],
                 active=True)
         except models.Users.DoesNotExist:
-            errors = (INVALID_RECOVERY,)
-            raise UserError(errors)
+            errors.append(INVALID_RECOVERY)
+            raise UserError(*errors)
 
         try:
             method = models.Methods.objects.get(user=user_ob,
                 method=models.METHOD_RECOVERY_TOKEN,
                 status=models.METHOD_ACTIVE)
         except models.Methods.DoesNotExist:
-            errors = (INVALID_RECOVERY,)
-            raise UserError(errors)
+            errors.append(INVALID_RECOVERY)
+            raise UserError(*errors)
 
         method.status = models.METHOD_INACTIVE
         method.save()
 
         if method.expired():
-            errors = (INVALID_RECOVERY,)
-            raise UserError(errors)
+            errors.append(INVALID_RECOVERY)
+            raise UserError(*errors)
 
         self.user_obs = (user_ob,)
         return self.user_obs
@@ -563,6 +574,8 @@ class User(object):
         if self.user_obs:
             return False
 
+        errors = []
+
         schema = Schema({
             Required('username', _('username-required')): All(str,
                 msg=_('invalid-username')),
@@ -576,29 +589,29 @@ class User(object):
             del user_info
         except MultipleInvalid as error:
             errors = validators.list_errors(error)
-            raise UserError(errors)
+            raise UserError(*errors)
 
         try:
             user_ob = models.Users.objects.get(username=validated['username'],
                 active=True)
         except models.Users.DoesNotExist:
-            errors = (INVALID_VALIDATION,)
-            raise UserError(errors)
+            errors.append(INVALID_VALIDATION)
+            raise UserError(*errors)
 
         try:
             method = models.Methods.objects.get(user=user_ob,
                 method=models.METHOD_VALIDATION_TOKEN,
                 status=models.METHOD_ACTIVE)
         except models.Methods.DoesNotExist:
-            errors = (INVALID_VALIDATION,)
-            raise UserError(errors)
+            errors.append(INVALID_VALIDATION)
+            raise UserError(*errors)
 
         method.status = models.METHOD_INACTIVE
         method.save()
 
         if method.expired():
-            errors = (INVALID_VALIDATION,)
-            raise UserError(errors)
+            errors.append(INVALID_VALIDATION)
+            raise UserError(*errors)
 
         return True
 
@@ -613,23 +626,25 @@ def generate_token(purpose, expiration_delta=TOKEN_TIME):
     token_ob = models.Tokens()
     token_ob.purpose = purpose
     token_ob.token = token
-    token_ob.expiration = expiration_delta
+    token_ob.expiration = datetime.datetime.now(pytz.utc) + expiration_delta
     token_ob.save()
 
-    return True
+    return token_ob
 
 def modify_meta_data(tag, setting=None, data=None):
     """Modifies meta data in meta app."""
 
-    if not setting and not data:
+    if setting == None and data == None:
         return False
 
     meta_ob = meta.models.Data.objects.get(tag=tag)
 
-    if setting:
+    if setting != None:
         meta_ob.setting = setting
 
-    if data:
+    if data != None:
         meta_ob.data = data
 
-    return False
+    meta_ob.save()
+
+    return True

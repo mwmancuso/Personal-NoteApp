@@ -76,7 +76,10 @@ def list_errors(multiple_invalid_exception):
     Takes the target assignment (e in except MultipleInvalid as e) and
     iterates error messages, returning tuple of error codes found.
     """
-    
+
+    if multiple_invalid_exception.error_message == 'extra keys not allowed':
+        raise multiple_invalid_exception
+
     error_list = []
     errors = multiple_invalid_exception.errors
     

@@ -33,7 +33,6 @@ TOKEN_NEW_USER = 'new-user'
 SALT_ROUNDS = 13 # Number of Bcrypt salt rounds for encryption
 INVALID_LOGIN = _('invalid-login') # Defined to provide ambiguous response
 INVALID_RECOVERY = _('invalid-recovery')
-INVALID_VALIDATION = _('invalid-validation')
 TOKEN_SALT_SIZE = 64 # Token generator length
 TOKEN_SIZE = 20
 TOKEN_TIME = datetime.timedelta(days=30)
@@ -41,6 +40,11 @@ VALIDATION_TIME = datetime.timedelta(hours=5)
 
 class UserManager(models.Manager):
     """Define this."""
+
+    # Limits this manager to standard users only.
+    def get_queryset(self):
+        return super(UserManager, self).get_queryset().filter(
+            user_type=USER_STANDARD)
 
     def create(self, **user_info):
         """Creates user based on defined variables.
@@ -106,9 +110,6 @@ class UserManager(models.Manager):
             # Deletes user_info to get rid of sensitive data
             del user_info
         except MultipleInvalid as error:
-            if error.error_message == 'extra keys not allowed':
-                raise
-
             user_errors = validators.list_errors(error)
             raise UserError(*user_errors)
 
@@ -199,35 +200,6 @@ class UserManager(models.Manager):
 
         return user_object
 
-class Users(models.Model):
-    """Database model for user storage.
-    
-    Does not store user authentication methods. Fields requiring
-    further explanation are as follows:
-    
-    user_type: integer describing the type of user. As of now, includes
-            the following:
-        0: standard user
-        1: admin user
-    """
-
-    objects = UserManager()
-    users = objects
-
-    username = models.CharField(max_length=50, unique=True)
-    first_name = models.CharField(max_length=30, blank=True)
-    last_name = models.CharField(max_length=30, blank=True)
-    email = models.EmailField(max_length=75)
-    user_type = models.IntegerField(default=0)
-    active = models.BooleanField(default=True)
-    last_access = models.DateTimeField(null=True)
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True, auto_now_add=True)
-    validated = models.BooleanField(default=False)
-    
-    def __str__(self):
-        return self.username
-
     def login_password(self, **user_info):
         """Handler to login via password authentication.
 
@@ -239,9 +211,6 @@ class Users(models.Model):
         MUST ASSIGN SESSIONS.
         MUST UPDATE ACCESS TIME (SESSIONS MAY DO THIS).
         """
-
-        if self.username:
-            raise RuntimeError('A user is assigned to this instance.')
 
         errors = []
 
@@ -266,33 +235,30 @@ class Users(models.Model):
             # Deletes user_info to get rid of sensitive data
             del user_info
         except MultipleInvalid as error:
-            if error.error_message == 'extra keys not allowed':
-                raise
-
             errors = validators.list_errors(error)
             raise UserError(*errors)
 
         try:
-            user_ob = Users.objects.get(
+            user_object = self.get_queryset().get(
                 username__iexact=validated['username'])
         except Users.DoesNotExist:
             errors.append(INVALID_LOGIN)
             raise UserError(*errors)
 
-        if not user_ob.active:
+        if not user_object.active:
             errors.append(_('user-inactive'))
             errors.append(INVALID_LOGIN)
             raise UserError(*errors)
 
         try:
-            method = Methods.objects.get(user=user_ob,
+            method_object = Methods.objects.get(user=user_object,
                 method=METHOD_PASSWORD, step=1,
                 status=METHOD_ACTIVE)
         except Methods.DoesNotExist:
             errors.append(INVALID_LOGIN)
             raise UserError(*errors)
 
-        password_hash = method.password.encode('utf-8')
+        password_hash = method_object.password.encode('utf-8')
         password = bcrypt.hashpw(validated['password'].encode('utf-8'),
                                  password_hash)
 
@@ -303,7 +269,342 @@ class Users(models.Model):
             errors.append(INVALID_LOGIN)
             raise UserError(*errors)
 
-        return True
+        return user_object
+
+    def login_recovery(self, **user_info):
+        """Validates recovery email token against methods."""
+
+        errors = []
+
+        schema = Schema({
+            Required('username', _('username-required')): All(str,
+                msg=_('invalid-username')),
+            Required('token', _('token-required')): All(str,
+                Match(validators.VALID_TOKEN_REGEX), msg=_('invalid-token'))
+        })
+
+        try:
+            validated = schema(user_info)
+
+            del user_info
+        except MultipleInvalid as error:
+            errors = validators.list_errors(error)
+            raise UserError(*errors)
+
+        try:
+            user_object = self.get_queryset().get(
+                username=validated['username'], active=True)
+        except Users.DoesNotExist:
+            errors.append(INVALID_RECOVERY)
+            raise UserError(*errors)
+
+        try:
+            method = Methods.objects.get(user=user_object,
+                method=METHOD_RECOVERY_TOKEN,
+                status=METHOD_ACTIVE,
+                token=validated['token'])
+        except Methods.DoesNotExist:
+            errors.append(INVALID_RECOVERY)
+            raise UserError(*errors)
+
+        method.status = METHOD_INACTIVE
+        method.save()
+
+        if method.expired():
+            errors.append(INVALID_RECOVERY)
+            raise UserError(*errors)
+
+        return user_object
+
+
+class TokenManager(models.Manager):
+    def generate(self, purpose, expiration_delta=TOKEN_TIME):
+        """Generates token for given purpose and adds it to database."""
+
+        token = random_string(size=TOKEN_SIZE)
+        token_data = dict()
+
+        token_data['purpose'] = purpose
+        token_data['token'] = token
+        token_data['expiration'] = datetime.datetime.now(pytz.utc) + \
+                                   expiration_delta
+
+        token_object = self.get_queryset().create(**token_data)
+
+        return token_object
+
+
+class AdminManager(UserManager):
+    """Define"""
+
+    # Limits this manager to standard users only.
+    def get_queryset(self):
+        return super(UserManager, self).get_queryset().filter(
+            user_type=USER_ADMIN)
+
+
+class Users(models.Model):
+    """Database model for user storage.
+    
+    Does not store user authentication methods. Fields requiring
+    further explanation are as follows:
+    
+    user_type: integer describing the type of user. As of now, includes
+            the following:
+        0: standard user
+        1: admin user
+    """
+
+    users = UserManager()
+    admins = AdminManager()
+
+    username = models.CharField(max_length=50, unique=True)
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+    email = models.EmailField(max_length=75)
+    user_type = models.IntegerField(default=0)
+    active = models.BooleanField(default=True)
+    last_access = models.DateTimeField(null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True, auto_now_add=True)
+    validated = models.BooleanField(default=False)
+
+    def delete(self, *args, **kwargs):
+        """Deletes users in user_obs.
+
+        Use cautiously, and only for cron cleanups or admin removals.
+        All related data must be archived before running this command,
+        with an exception for methods, which will be cascaded.
+        """
+
+        if not self.id:
+            raise RuntimeError('User must be defined to delete.')
+
+        errors = []
+
+        try:
+            super(Users, self).delete(*args, **kwargs)
+        except Users.ProtectedError:
+            errors.append(_('associated-data-present'))
+            raise UserError(*errors)
+
+    def deactivate(self):
+        """Preferred method for "deletion." Sets user to deactivated.
+
+        Also deactivates all methods.
+
+        This may be paired with a cron job to automatically delete
+        users after being deactivated for a certain amount of time.
+        Cron job may also remove user after archiving data. Locks user
+        out of recreation for the time being.
+
+        For now, all deactivated accounts remain deactivated.
+        """
+
+        if not self.id:
+            raise RuntimeError('User must be defined to set activation.')
+
+        errors = []
+
+        self.active = False
+        self.save()
+
+        method_list = Methods.objects.filter(user=self)
+        method_list.update(status=METHOD_INACTIVE)
+
+    def activate(self):
+        """Merely opposite of deactivate. Refer to deactivate."""
+
+        if not self.id:
+            raise RuntimeError('User must be defined to set activation.')
+
+        errors = []
+
+        self.active = True
+        self.save()
+
+        method_list = Methods.objects.filter(user=self)
+        method_list.update(status=METHOD_ACTIVE)
+
+    def modify_info(self, **user_info):
+        """Modifies user information for users.
+
+        Note that this only allows modification of user details, such
+        as username, names and email. It does not allow modification of
+        settings such as user_type. For that, specific functions must
+        be used.
+        """
+
+        if not self.id:
+            raise RuntimeError('User must be defined to modify.')
+
+        errors = []
+        validated = dict()
+
+        schema = Schema({
+            'username': All(str, Match(validators.VALID_USERNAME_REGEX),
+                msg=_('invalid-username')),
+            'first_name': All(str, Match(validators.VALID_NAME_REGEX),
+                msg=_('invalid-first-name')),
+            'last_name': All(str, Match(validators.VALID_NAME_REGEX),
+                msg=_('invalid-last-name')),
+            'email': All(str, Match(validators.VALID_EMAIL_REGEX),
+                msg=_('invalid-email')),
+        })
+
+        try:
+            validated = schema(user_info)
+        except MultipleInvalid as error:
+            errors = validators.list_errors(error)
+            raise UserError(*errors)
+
+        # Sets instance variables to those of the validated schema and saves
+        for key, value in list(validated.items()):
+            setattr(self, key, value)
+        self.save()
+
+    def modify_password(self, new=None, check=True, old=None):
+        """Optionally checks and sets password for single user."""
+
+        if not self.id:
+            raise RuntimeError('User must be defined to modify password.')
+
+        errors = []
+
+        if not new:
+            errors.append('new-password-required')
+
+        schema = Schema({
+            'password': All(str, validators.Password,
+                msg=_('invalid-new-password')),
+        })
+
+        try:
+            schema({'password': new})
+        except MultipleInvalid as error:
+            errors += list(validators.list_errors(error))
+
+        password_method = Methods.objects.get(user=self,
+            method=METHOD_PASSWORD)
+
+        if check:
+            if not old:
+                errors.append('old-password-required')
+            else:
+                password_hash = password_method.password.encode('utf-8')
+                password = bcrypt.hashpw(old.encode('utf-8'), password_hash)
+
+                del old
+
+                if password != password_hash:
+                    errors.append('invalid-old-password')
+
+        if errors:
+            raise UserError(*errors)
+
+        password = bcrypt.hashpw(new.encode('utf-8'),
+            bcrypt.gensalt(SALT_ROUNDS))
+
+        password_method.password = password
+        password_method.save()
+
+    def recover_account(self):
+        """Creates recovery email token and sends it to user."""
+
+        if not self.id:
+            raise RuntimeError('User must be defined to recover account.')
+
+        errors = []
+
+        Methods.objects.filter(user=self, method=METHOD_RECOVERY_TOKEN,
+            status=METHOD_ACTIVE).update(status=METHOD_INACTIVE)
+
+        email = self.email
+        random_salt = random_string(size=TOKEN_SALT_SIZE)
+        token = hashlib.sha1((email + random_salt).encode('utf-8')).hexdigest()
+
+        method = Methods()
+        method.user = self
+        method.method = METHOD_RECOVERY_TOKEN
+        method.token = token
+        method.step = 0
+        method.expiration = datetime.datetime.now() + VALIDATION_TIME
+        method.save()
+
+        subject = 'Recovery Token'
+        text = 'Your account recovery token is: %s' % token
+
+        try:
+            send_mail(subject, text, settings.EMAIL_HOST_USER, [email])
+        except:
+            errors.append(_('recovery-email-failure'))
+            raise UserError(*errors)
+
+    def validate(self, token=None):
+        """Validates account based on emailed token."""
+
+        if not self.id:
+            raise RuntimeError('User must be defined to validate account.')
+
+        errors = []
+
+        if not token:
+            errors.append('token-required')
+            raise UserError(*errors)
+
+        schema = Schema({
+            'token': All(str, Match(validators.VALID_TOKEN_REGEX),
+                msg=_('invalid-token'))
+        })
+
+        try:
+            validated = schema({'token': token})
+
+            del token
+        except MultipleInvalid as error:
+            errors += list(validators.list_errors(error))
+            raise UserError(*errors)
+
+        try:
+            method_object = Methods.objects.get(user=self,
+                method=METHOD_VALIDATION_TOKEN,
+                status=METHOD_ACTIVE,
+                token=validated['token'])
+        except Methods.DoesNotExist:
+            errors.append('invalid-token')
+            raise UserError(*errors)
+
+        method_object.status = METHOD_INACTIVE
+        method_object.save()
+
+        if method_object.expired():
+            errors.append('token-expired')
+            raise UserError(*errors)
+
+        self.validated = True
+        self.save()
+
+    def set_admin(self):
+        """Define."""
+
+        if not self.id:
+            raise RuntimeError('User must be defined to update status.')
+
+        self.user_type = USER_ADMIN
+        self.save()
+
+    def set_standard(self):
+        """Define."""
+
+        if not self.id:
+            raise RuntimeError('User must be defined to update status.')
+
+        self.user_type = USER_STANDARD
+        self.save()
+
+    def __str__(self):
+        return self.username
+
 
 class Methods(models.Model):
     """Database model for authentication methods. Fields requiring
@@ -345,6 +646,7 @@ class Methods(models.Model):
     def __str__(self):
         return str(self.method)
 
+
 class Tokens(models.Model):
     """Model for tokens used throughout project.
 
@@ -353,7 +655,9 @@ class Tokens(models.Model):
 
     Tokens must be either letters or numbers, that's it.
     """
-    
+
+    objects = TokenManager()
+
     purpose = models.CharField(max_length=30)
     token = models.CharField(max_length=50, unique=True)
     exhausted = models.BooleanField(default=False)

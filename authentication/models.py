@@ -1,3 +1,16 @@
+"""Models defining all authentication related operations.
+
+Has three models:
+* Users: handles all users; admins have separate manager.
+* Methods: login methods for users.
+* Tokens: handles tokens for various authentication matters.
+
+Each model has related functions and managers that may be called to
+operate on select models. If repetitive or lengthy functions are
+required elsewhere, they should be defined here. Constants from this
+file should also be used wherever possible.
+"""
+
 from django.db import models
 import pytz
 import smtplib
@@ -39,7 +52,18 @@ TOKEN_TIME = datetime.timedelta(days=30)
 VALIDATION_TIME = datetime.timedelta(hours=5)
 
 class UserManager(models.Manager):
-    """Define this."""
+    """Manager for the Users model.
+
+    Exists to provide table-level operations such as creating users and
+    logging them in.
+
+    The key difference for manager vs. model functions is that manager
+    functions create Users instances, whereas model functions operate
+    on existing ones.
+
+    Note that this manager only allows operation on standard users.
+    Other managers allow for operation on other specific user-types.
+    """
 
     # Limits this manager to standard users only.
     def get_queryset(self):
@@ -59,12 +83,12 @@ class UserManager(models.Manager):
         defined prior to calling create. *s mean the variable is
         required:
 
-        - username*
-        - first_name
-        - last_name
-        - email*
-        - password* (plaintext)
-        - token - required if new-user setting is set to token
+        * username*
+        * first_name
+        * last_name
+        * email*
+        * password* (plaintext)
+        * token - required if new-user setting is set to token
         """
 
         user_errors = []
@@ -208,7 +232,6 @@ class UserManager(models.Manager):
         exists and password is correct.
 
         TODO:
-        MUST ASSIGN SESSIONS.
         MUST UPDATE ACCESS TIME (SESSIONS MAY DO THIS).
         """
 
@@ -272,7 +295,11 @@ class UserManager(models.Manager):
         return user_object
 
     def login_recovery(self, **user_info):
-        """Validates recovery email token against methods."""
+        """Validates recovery email token against methods.
+
+        Accepts username and token; both are required. Deactivates
+        recovery token upon calling.
+        """
 
         errors = []
 
@@ -317,7 +344,22 @@ class UserManager(models.Manager):
         return user_object
 
 
+class AdminManager(UserManager):
+    """Allows accessing admin accounts only and is admin-specific.
+
+    Merely a mirror of the standard UserManager, but also allows custom
+    admin related account functions.
+    """
+
+    # Limits this manager to admin users only.
+    def get_queryset(self):
+        return super(UserManager, self).get_queryset().filter(
+            user_type=USER_ADMIN)
+
+
 class TokenManager(models.Manager):
+    """Manager class for tokens. Provides token-related functions."""
+
     def generate(self, purpose, expiration_delta=TOKEN_TIME):
         """Generates token for given purpose and adds it to database."""
 
@@ -334,25 +376,15 @@ class TokenManager(models.Manager):
         return token_object
 
 
-class AdminManager(UserManager):
-    """Define"""
-
-    # Limits this manager to standard users only.
-    def get_queryset(self):
-        return super(UserManager, self).get_queryset().filter(
-            user_type=USER_ADMIN)
-
-
 class Users(models.Model):
     """Database model for user storage.
-    
+
     Does not store user authentication methods. Fields requiring
     further explanation are as follows:
-    
-    user_type: integer describing the type of user. As of now, includes
-            the following:
-        0: standard user
-        1: admin user
+
+    * user_type: integer describing the type of user. Includes the following:
+     * 0: standard user
+     * 1: admin user
     """
 
     users = UserManager()
@@ -427,12 +459,15 @@ class Users(models.Model):
         method_list.update(status=METHOD_ACTIVE)
 
     def modify_info(self, **user_info):
-        """Modifies user information for users.
+        """Validates and modifies user information for user.
 
         Note that this only allows modification of user details, such
         as username, names and email. It does not allow modification of
         settings such as user_type. For that, specific functions must
         be used.
+
+        This function is provided to validate info and also disallow
+        certain information to be directly modified.
         """
 
         if not self.id:
@@ -464,7 +499,11 @@ class Users(models.Model):
         self.save()
 
     def modify_password(self, new=None, check=True, old=None):
-        """Optionally checks and sets password for single user."""
+        """Optionally checks and sets password for user.
+
+        Note on arguments: new is required. old is only required if
+        check is true.
+        """
 
         if not self.id:
             raise RuntimeError('User must be defined to modify password.')
@@ -585,7 +624,7 @@ class Users(models.Model):
         self.save()
 
     def set_admin(self):
-        """Define."""
+        """Sets user_type to that of an admin."""
 
         if not self.id:
             raise RuntimeError('User must be defined to update status.')
@@ -594,7 +633,7 @@ class Users(models.Model):
         self.save()
 
     def set_standard(self):
-        """Define."""
+        """Sets user_type to that of a standard user."""
 
         if not self.id:
             raise RuntimeError('User must be defined to update status.')
@@ -609,20 +648,21 @@ class Users(models.Model):
 class Methods(models.Model):
     """Database model for authentication methods. Fields requiring
     further explanation are as follows:
-    
-    method: integer representing method type:
-        0: password
-        1: validation token
-    password/token: only one may be defined; password hashes are often
-            shorter and quicker and are not arbitrary.
-    step: for multi-step authentication, important to be defined.
-        Numbered by number of step, i.e. 1 for first step.
-    status: current availability status of the method for the user.
-            Currently includes the following:
-        1: active
-        0: inactive
+
+    * method: integer representing method type:
+     * 0: password
+     * 1: validation token
+    * password/token:
+     * only one may be defined; password hashes are often
+     * shorter and quicker and are not arbitrary.
+    * step:
+     * for multi-step authentication, important to be defined.
+     * Numbered by number of step, i.e. 1 for first step.
+    * status: current availability status of the method for the user.
+     * 1: active
+     * 0: inactive
     """
-    
+
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
     method = models.IntegerField()
     password = models.CharField(max_length=60, blank=True)
@@ -642,7 +682,7 @@ class Methods(models.Model):
             return False
 
         return datetime.datetime.now(pytz.utc) > self.expiration
-    
+
     def __str__(self):
         return str(self.method)
 
@@ -672,7 +712,7 @@ class Tokens(models.Model):
         # Returns not expired if no expiration date
         if not self.expiration:
             return False
-        
+
         return datetime.datetime.now(pytz.utc) > self.expiration
 
     # Defines authentication methods

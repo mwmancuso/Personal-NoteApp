@@ -94,6 +94,7 @@ class UserManager(models.Manager):
         user_errors = []
         token_required = False
         token_object = None
+        validated = dict()
 
         # Check to see if user creation is enabled
         new_users = meta.models.Data.objects.get(tag='new-users')
@@ -135,6 +136,20 @@ class UserManager(models.Manager):
             del user_info
         except MultipleInvalid as error:
             user_errors = validators.list_errors(error)
+
+        current_user = self.get_queryset().filter(
+            username__iexact=validated['username'])
+
+        if current_user:
+            user_errors.append(_('user-exists'))
+
+        current_email = self.get_queryset().filter(email__iexact=validated[
+            'email'])
+
+        if current_email:
+            user_errors.append(_('email-exists'))
+
+        if user_errors:
             raise UserError(*user_errors)
 
         # Checks to see if token is in database if required
@@ -161,37 +176,20 @@ class UserManager(models.Manager):
             del validated['token']
 
         # Hashes password using bcrypt
-        encrypted_password = bcrypt.hashpw(validated['password'].encode('utf-8'),
-            bcrypt.gensalt(SALT_ROUNDS))
+        encrypted_password = bcrypt.hashpw(
+            validated['password'].encode('utf-8'), bcrypt.gensalt(
+            SALT_ROUNDS))
 
         # Deletes password from info so it doesn't get inserted on creation
         del validated['password']
 
-        current_user = self.get_queryset().filter(
-            username__iexact=validated['username'])
-
-        if current_user:
-            user_errors.append(_('user-exists'))
-            raise UserError(*user_errors)
-
-        current_email = self.get_queryset().filter(email__iexact=validated[
-            'email'])
-
-        if current_email:
-            user_errors.append(_('email-exists'))
-            raise UserError(*user_errors)
-
-        # Sets instance variables to those of the validated dictionary
-        # for key, value in list(validated.items()):
-        #     setattr(self, key, value)
-
-        # Saves password in methods database
+        # Creates password method
         password_method = Methods()
         password_method.method = METHOD_PASSWORD
         password_method.password = encrypted_password
         password_method.step = 1
 
-        # Creates and saves validation token
+        # Creates validation token
         random_salt = random_string(size=TOKEN_SALT_SIZE)
         email = validated['email']
         token = hashlib.sha1((email + random_salt).encode('utf-8')).hexdigest()
@@ -204,7 +202,9 @@ class UserManager(models.Manager):
         # Saves all data if validation was complete
         if token_required:
             token_object.save()
+
         user_object = self.get_queryset().create(**validated)
+
         password_method.user = user_object
         password_method.save()
         validation_token_method.user = user_object
@@ -230,19 +230,16 @@ class UserManager(models.Manager):
         Accepts two pieces of information: username and password. Both
         are required. Validates, checks and returns user object if user
         exists and password is correct.
-
-        TODO:
-        MUST UPDATE ACCESS TIME (SESSIONS MAY DO THIS).
         """
 
-        errors = []
+        user_errors = []
 
         # Check to see if user login is enabled
         user_login = meta.models.Data.objects.get(tag='user-login')
 
         if user_login.setting == 0:
-            errors.append(_('login-disabled'))
-            raise UserError(*errors)
+            user_errors.append(_('login-disabled'))
+            raise UserError(*user_errors)
 
         # Voluptuous schema for validation; tested with try statement
         schema = Schema({
@@ -258,39 +255,41 @@ class UserManager(models.Manager):
             # Deletes user_info to get rid of sensitive data
             del user_info
         except MultipleInvalid as error:
-            errors = validators.list_errors(error)
-            raise UserError(*errors)
+            user_errors = validators.list_errors(error)
+            raise UserError(*user_errors)
 
         try:
             user_object = self.get_queryset().get(
                 username__iexact=validated['username'])
         except Users.DoesNotExist:
-            errors.append(INVALID_LOGIN)
-            raise UserError(*errors)
+            user_errors.append(INVALID_LOGIN)
+            raise UserError(*user_errors)
 
         if not user_object.active:
-            errors.append(_('user-inactive'))
-            errors.append(INVALID_LOGIN)
-            raise UserError(*errors)
+            user_errors.append(_('user-inactive'))
+            raise UserError(*user_errors)
 
         try:
             method_object = Methods.objects.get(user=user_object,
                 method=METHOD_PASSWORD, step=1,
                 status=METHOD_ACTIVE)
         except Methods.DoesNotExist:
-            errors.append(INVALID_LOGIN)
-            raise UserError(*errors)
+            user_errors.append(INVALID_LOGIN)
+            raise UserError(*user_errors)
 
-        password_hash = method_object.password.encode('utf-8')
-        password = bcrypt.hashpw(validated['password'].encode('utf-8'),
-                                 password_hash)
+        user_password = method_object.password.encode('utf-8')
+        test_password = bcrypt.hashpw(validated['password'].encode('utf-8'),
+                                 user_password)
 
         # Deletes original password to prevent later misuse
         del validated['password']
 
-        if password != password_hash:
-            errors.append(INVALID_LOGIN)
-            raise UserError(*errors)
+        if test_password != user_password:
+            user_errors.append(INVALID_LOGIN)
+            raise UserError(*user_errors)
+
+        user_object.last_access = datetime.datetime.now(pytz.utc)
+        user_object.save()
 
         return user_object
 
@@ -301,7 +300,7 @@ class UserManager(models.Manager):
         recovery token upon calling.
         """
 
-        errors = []
+        user_errors = []
 
         schema = Schema({
             Required('username', _('username-required')): All(str,
@@ -315,15 +314,15 @@ class UserManager(models.Manager):
 
             del user_info
         except MultipleInvalid as error:
-            errors = validators.list_errors(error)
-            raise UserError(*errors)
+            user_errors = validators.list_errors(error)
+            raise UserError(*user_errors)
 
         try:
             user_object = self.get_queryset().get(
-                username=validated['username'], active=True)
+                username__iexact=validated['username'], active=True)
         except Users.DoesNotExist:
-            errors.append(INVALID_RECOVERY)
-            raise UserError(*errors)
+            user_errors.append(INVALID_RECOVERY)
+            raise UserError(*user_errors)
 
         try:
             method = Methods.objects.get(user=user_object,
@@ -331,15 +330,19 @@ class UserManager(models.Manager):
                 status=METHOD_ACTIVE,
                 token=validated['token'])
         except Methods.DoesNotExist:
-            errors.append(INVALID_RECOVERY)
-            raise UserError(*errors)
+            user_errors.append(INVALID_RECOVERY)
+            raise UserError(*user_errors)
 
+        # Deactivates token regardless of expiration time
         method.status = METHOD_INACTIVE
         method.save()
 
         if method.expired():
-            errors.append(INVALID_RECOVERY)
-            raise UserError(*errors)
+            user_errors.append(INVALID_RECOVERY)
+            raise UserError(*user_errors)
+
+        user_object.last_access = datetime.datetime.now(pytz.utc)
+        user_object.save()
 
         return user_object
 
@@ -412,13 +415,13 @@ class Users(models.Model):
         if not self.id:
             raise RuntimeError('User must be defined to delete.')
 
-        errors = []
+        user_errors = []
 
         try:
             super(Users, self).delete(*args, **kwargs)
         except Users.ProtectedError:
-            errors.append(_('associated-data-present'))
-            raise UserError(*errors)
+            user_errors.append(_('associated-data-present'))
+            raise UserError(*user_errors)
 
     def deactivate(self):
         """Preferred method for "deletion." Sets user to deactivated.
@@ -436,8 +439,6 @@ class Users(models.Model):
         if not self.id:
             raise RuntimeError('User must be defined to set activation.')
 
-        errors = []
-
         self.active = False
         self.save()
 
@@ -449,8 +450,6 @@ class Users(models.Model):
 
         if not self.id:
             raise RuntimeError('User must be defined to set activation.')
-
-        errors = []
 
         self.active = True
         self.save()
@@ -473,7 +472,7 @@ class Users(models.Model):
         if not self.id:
             raise RuntimeError('User must be defined to modify.')
 
-        errors = []
+        user_errors = []
         validated = dict()
 
         schema = Schema({
@@ -490,8 +489,8 @@ class Users(models.Model):
         try:
             validated = schema(user_info)
         except MultipleInvalid as error:
-            errors = validators.list_errors(error)
-            raise UserError(*errors)
+            user_errors = validators.list_errors(error)
+            raise UserError(*user_errors)
 
         # Sets instance variables to those of the validated schema and saves
         for key, value in list(validated.items()):
@@ -508,10 +507,10 @@ class Users(models.Model):
         if not self.id:
             raise RuntimeError('User must be defined to modify password.')
 
-        errors = []
+        user_errors = []
 
         if not new:
-            errors.append('new-password-required')
+            user_errors.append(_('new-password-required'))
 
         schema = Schema({
             'password': All(str, validators.Password,
@@ -521,14 +520,14 @@ class Users(models.Model):
         try:
             schema({'password': new})
         except MultipleInvalid as error:
-            errors += list(validators.list_errors(error))
+            user_errors += list(validators.list_errors(error))
 
         password_method = Methods.objects.get(user=self,
             method=METHOD_PASSWORD)
 
         if check:
             if not old:
-                errors.append('old-password-required')
+                user_errors.append(_('old-password-required'))
             else:
                 password_hash = password_method.password.encode('utf-8')
                 password = bcrypt.hashpw(old.encode('utf-8'), password_hash)
@@ -536,10 +535,10 @@ class Users(models.Model):
                 del old
 
                 if password != password_hash:
-                    errors.append('invalid-old-password')
+                    user_errors.append(_('invalid-old-password'))
 
-        if errors:
-            raise UserError(*errors)
+        if user_errors:
+            raise UserError(*user_errors)
 
         password = bcrypt.hashpw(new.encode('utf-8'),
             bcrypt.gensalt(SALT_ROUNDS))
@@ -553,7 +552,7 @@ class Users(models.Model):
         if not self.id:
             raise RuntimeError('User must be defined to recover account.')
 
-        errors = []
+        user_errors = []
 
         Methods.objects.filter(user=self, method=METHOD_RECOVERY_TOKEN,
             status=METHOD_ACTIVE).update(status=METHOD_INACTIVE)
@@ -576,8 +575,8 @@ class Users(models.Model):
         try:
             send_mail(subject, text, settings.EMAIL_HOST_USER, [email])
         except:
-            errors.append(_('recovery-email-failure'))
-            raise UserError(*errors)
+            user_errors.append(_('recovery-email-failure'))
+            raise UserError(*user_errors)
 
     def validate(self, token=None):
         """Validates account based on emailed token."""
@@ -585,11 +584,11 @@ class Users(models.Model):
         if not self.id:
             raise RuntimeError('User must be defined to validate account.')
 
-        errors = []
+        user_errors = []
 
         if not token:
-            errors.append('token-required')
-            raise UserError(*errors)
+            user_errors.append(_('token-required'))
+            raise UserError(*user_errors)
 
         schema = Schema({
             'token': All(str, Match(validators.VALID_TOKEN_REGEX),
@@ -601,8 +600,8 @@ class Users(models.Model):
 
             del token
         except MultipleInvalid as error:
-            errors += list(validators.list_errors(error))
-            raise UserError(*errors)
+            user_errors += list(validators.list_errors(error))
+            raise UserError(*user_errors)
 
         try:
             method_object = Methods.objects.get(user=self,
@@ -610,15 +609,15 @@ class Users(models.Model):
                 status=METHOD_ACTIVE,
                 token=validated['token'])
         except Methods.DoesNotExist:
-            errors.append('invalid-token')
-            raise UserError(*errors)
+            user_errors.append(_('invalid-token'))
+            raise UserError(*user_errors)
 
         method_object.status = METHOD_INACTIVE
         method_object.save()
 
         if method_object.expired():
-            errors.append('token-expired')
-            raise UserError(*errors)
+            user_errors.append(_('token-expired'))
+            raise UserError(*user_errors)
 
         self.validated = True
         self.save()

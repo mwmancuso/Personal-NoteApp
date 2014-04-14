@@ -397,8 +397,6 @@ The development checklist is intended to be in as much order as it can be. Some 
  * -- ~~Login user using password~~
  * -- ~~Validate user using email link~~
  * -- Second step login
- * -- Create session
- * -- Retrieve session
  * - ~~Password protection (Salt, CSPRNG, bcrypt)~~
  * - ~~Password complexity checking~~
  * -- ~~http://its.ucsc.edu/policies/password.html~~
@@ -408,13 +406,13 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - ~~Ambiguous error pages~~
  * - ~~Email system with validation~~
  * - ~~Token system for alpha and beta sign-ups~~
- * Session management
  * Brute force protection
  * Admin section
  * - Admin 2-step (OAUTH)
  * - ~~SSL client authorization~~
  * ~~SSL (StartSSL)~~
 * Graphical interface for accounts [v1]
+ * Session management
 * Database layout for general node system [v1]
 * Graphical interface for general node system [v1]
 * In-house module API database layout [v1]

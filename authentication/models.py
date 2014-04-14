@@ -224,7 +224,7 @@ class UserManager(models.Manager):
 
         return user_object
 
-    def login_password(self, **user_info):
+    def login_password(self, update_access=True, **user_info):
         """Handler to login via password authentication.
 
         Accepts two pieces of information: username and password. Both
@@ -288,8 +288,12 @@ class UserManager(models.Manager):
             user_errors.append(INVALID_LOGIN)
             raise UserError(*user_errors)
 
-        user_object.last_access = datetime.datetime.now(pytz.utc)
-        user_object.save()
+        method_object.last_used = datetime.datetime.now(pytz.utc)
+        method_object.save()
+
+        if update_access:
+            user_object.last_access = datetime.datetime.now(pytz.utc)
+            user_object.save()
 
         return user_object
 
@@ -325,7 +329,7 @@ class UserManager(models.Manager):
             raise UserError(*user_errors)
 
         try:
-            method = Methods.objects.get(user=user_object,
+            method_object = Methods.objects.get(user=user_object,
                 method=METHOD_RECOVERY_TOKEN,
                 status=METHOD_ACTIVE,
                 token=validated['token'])
@@ -334,12 +338,15 @@ class UserManager(models.Manager):
             raise UserError(*user_errors)
 
         # Deactivates token regardless of expiration time
-        method.status = METHOD_INACTIVE
-        method.save()
+        method_object.status = METHOD_INACTIVE
+        method_object.save()
 
-        if method.expired():
+        if method_object.expired():
             user_errors.append(INVALID_RECOVERY)
             raise UserError(*user_errors)
+
+        method_object.last_used = datetime.datetime.now(pytz.utc)
+        method_object.save()
 
         user_object.last_access = datetime.datetime.now(pytz.utc)
         user_object.save()
@@ -426,7 +433,8 @@ class Users(models.Model):
     def deactivate(self):
         """Preferred method for "deletion." Sets user to deactivated.
 
-        Also deactivates all methods.
+        Also deletes all methods. Password must be modified later with
+        check=False.
 
         This may be paired with a cron job to automatically delete
         users after being deactivated for a certain amount of time.
@@ -443,7 +451,7 @@ class Users(models.Model):
         self.save()
 
         method_list = Methods.objects.filter(user=self)
-        method_list.update(status=METHOD_INACTIVE)
+        method_list.delete()
 
     def activate(self):
         """Merely opposite of deactivate. Refer to deactivate."""
@@ -453,9 +461,6 @@ class Users(models.Model):
 
         self.active = True
         self.save()
-
-        method_list = Methods.objects.filter(user=self)
-        method_list.update(status=METHOD_ACTIVE)
 
     def modify_info(self, **user_info):
         """Validates and modifies user information for user.
@@ -473,7 +478,6 @@ class Users(models.Model):
             raise RuntimeError('User must be defined to modify.')
 
         user_errors = []
-        validated = dict()
 
         schema = Schema({
             'username': All(str, Match(validators.VALID_USERNAME_REGEX),
@@ -529,24 +533,25 @@ class Users(models.Model):
             if not old:
                 user_errors.append(_('old-password-required'))
             else:
-                password_hash = password_method.password.encode('utf-8')
-                password = bcrypt.hashpw(old.encode('utf-8'), password_hash)
+                user_password = password_method.password.encode('utf-8')
+                test_password = bcrypt.hashpw(old.encode('utf-8'),
+                                            user_password)
 
                 del old
 
-                if password != password_hash:
+                if test_password != user_password:
                     user_errors.append(_('invalid-old-password'))
 
         if user_errors:
             raise UserError(*user_errors)
 
-        password = bcrypt.hashpw(new.encode('utf-8'),
+        new_password = bcrypt.hashpw(new.encode('utf-8'),
             bcrypt.gensalt(SALT_ROUNDS))
 
-        password_method.password = password
+        password_method.password = new_password
         password_method.save()
 
-    def recover_account(self):
+    def recover(self):
         """Creates recovery email token and sends it to user."""
 
         if not self.id:
@@ -554,6 +559,7 @@ class Users(models.Model):
 
         user_errors = []
 
+        # Deactivates all old recovery tokens
         Methods.objects.filter(user=self, method=METHOD_RECOVERY_TOKEN,
             status=METHOD_ACTIVE).update(status=METHOD_INACTIVE)
 
@@ -561,13 +567,13 @@ class Users(models.Model):
         random_salt = random_string(size=TOKEN_SALT_SIZE)
         token = hashlib.sha1((email + random_salt).encode('utf-8')).hexdigest()
 
-        method = Methods()
-        method.user = self
-        method.method = METHOD_RECOVERY_TOKEN
-        method.token = token
-        method.step = 0
-        method.expiration = datetime.datetime.now() + VALIDATION_TIME
-        method.save()
+        method_object = Methods()
+        method_object.user = self
+        method_object.method = METHOD_RECOVERY_TOKEN
+        method_object.token = token
+        method_object.step = 0
+        method_object.expiration = datetime.datetime.now() + VALIDATION_TIME
+        method_object.save()
 
         subject = 'Recovery Token'
         text = 'Your account recovery token is: %s' % token
@@ -613,6 +619,7 @@ class Users(models.Model):
             raise UserError(*user_errors)
 
         method_object.status = METHOD_INACTIVE
+        method_object.last_used = datetime.datetime.now(pytz.utc)
         method_object.save()
 
         if method_object.expired():

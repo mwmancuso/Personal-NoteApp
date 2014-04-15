@@ -10,8 +10,10 @@ operate on select models. If repetitive or lengthy functions are
 required elsewhere, they should be defined here. Constants from this
 file should also be used wherever possible.
 """
+import base64
 
 from django.db import models
+import onetimepass as otp
 import pytz
 import smtplib
 from voluptuous import Schema, All, Required, Match, MultipleInvalid
@@ -38,6 +40,7 @@ USER_ADMIN = 1
 METHOD_PASSWORD = 0
 METHOD_VALIDATION_TOKEN = 1
 METHOD_RECOVERY_TOKEN = 2
+METHOD_OATH_KEY = 3
 METHOD_ACTIVE = 1
 METHOD_INACTIVE = 0
 TOKEN_NEW_USER = 'new-user'
@@ -50,6 +53,7 @@ TOKEN_SALT_SIZE = 64 # Token generator length
 TOKEN_SIZE = 20
 TOKEN_TIME = datetime.timedelta(days=30)
 VALIDATION_TIME = datetime.timedelta(hours=5)
+OATH_STRING_SIZE = 10 # Must be > 10, and multiples of 5 for no =s
 
 class UserManager(models.Manager):
     """Manager for the Users model.
@@ -271,8 +275,7 @@ class UserManager(models.Manager):
 
         try:
             method_object = Methods.objects.get(user=user_object,
-                method=METHOD_PASSWORD, step=1,
-                status=METHOD_ACTIVE)
+                method=METHOD_PASSWORD, step=1, status=METHOD_ACTIVE)
         except Methods.DoesNotExist:
             user_errors.append(INVALID_LOGIN)
             raise UserError(*user_errors)
@@ -294,6 +297,40 @@ class UserManager(models.Manager):
         if update_access:
             user_object.last_access = datetime.datetime.now(pytz.utc)
             user_object.save()
+
+        return user_object
+
+    def login_oath(self, token, **user_info):
+        """Adds second step to password authentication by using OATH.
+
+        Takes standard password credentials and passes them directly to
+        login_password function. If successful, proceeds to test second
+        authentication methods through use of a TOTP token.
+        """
+
+        user_errors = []
+
+        # Attempts to login user through password
+        user_object = self.login_password(update_access=False, **user_info)
+
+        try:
+            method_object = Methods.objects.get(user=user_object,
+                method=METHOD_OATH_KEY, step=2, status=METHOD_ACTIVE)
+        except Methods.DoesNotExist:
+            user_errors.append(INVALID_LOGIN)
+            raise UserError(*user_errors)
+
+        user_current_token = otp.get_totp(method_object.token)
+
+        if user_current_token != token:
+            user_errors.append(INVALID_LOGIN)
+            raise UserError(*user_errors)
+
+        method_object.last_used = datetime.datetime.now(pytz.utc)
+        method_object.save()
+
+        user_object.last_access = datetime.datetime.now(pytz.utc)
+        user_object.save()
 
         return user_object
 
@@ -472,6 +509,8 @@ class Users(models.Model):
 
         This function is provided to validate info and also disallow
         certain information to be directly modified.
+
+        May set up a mechanism to change emails with re-validation.
         """
 
         if not self.id:
@@ -583,6 +622,32 @@ class Users(models.Model):
         except:
             user_errors.append(_('recovery-email-failure'))
             raise UserError(*user_errors)
+
+    def generate_oath(self):
+        """Generates a TOTP oath key for 2nd step authentication.
+
+        Encodes a ten-character random string and feeds it through a
+        base32 encoding. Saves code to database and returns it for user
+        user.
+        """
+
+        if not self.id:
+            raise RuntimeError('User must be defined for OATH generation.')
+
+        Methods.objects.filter(user=self, method=METHOD_OATH_KEY).delete()
+
+        random = random_string(size=OATH_STRING_SIZE)
+        key = base64.b32encode(random.encode('utf-8'))
+
+        method_object = Methods()
+        method_object.user = self
+        method_object.method = METHOD_OATH_KEY
+        method_object.token = key
+        method_object.step = 2
+        method_object.save()
+
+        return key
+
 
     def validate(self, token=None):
         """Validates account based on emailed token."""

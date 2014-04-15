@@ -382,10 +382,10 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - ~~Logging system~~
  * ~~Validator methods~~
 * ~~Locality~~ [v1]
-* **Login/account system** [v1]
+* ~~Login/account system~~ [v1]
  * ~~Database structure~~
- * Login system methods
- * - Functions:
+ * ~~Login system methods~~
+ * - ~~Functions:~~
  * -- ~~Create user~~
  * --- ~~Emails for validation~~
  * -- ~~Get by info~~
@@ -396,7 +396,7 @@ The development checklist is intended to be in as much order as it can be. Some 
  * -- ~~Send validation email~~
  * -- ~~Login user using password~~
  * -- ~~Validate user using email link~~
- * -- Second step login
+ * -- ~~Second step login~~
  * - ~~Password protection (Salt, CSPRNG, bcrypt)~~
  * - ~~Password complexity checking~~
  * -- ~~http://its.ucsc.edu/policies/password.html~~
@@ -407,11 +407,11 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - ~~Email system with validation~~
  * - ~~Token system for alpha and beta sign-ups~~
  * Brute force protection
- * Admin section
- * - Admin 2-step (OAUTH)
+ * ~~Admin section~~
+ * - ~~Admin 2-step (OATH)~~
  * - ~~SSL client authorization~~
  * ~~SSL (StartSSL)~~
-* Graphical interface for accounts [v1]
+* **Graphical interface for accounts** [v1]
  * Session management
 * Database layout for general node system [v1]
 * Graphical interface for general node system [v1]

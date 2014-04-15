@@ -382,42 +382,37 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - ~~Logging system~~
  * ~~Validator methods~~
 * ~~Locality~~ [v1]
-* **Login/account system** [v1]
+* ~~Login/account system~~ [v1]
  * ~~Database structure~~
- * Login system methods
- * - Functions:
+ * ~~Login system methods~~
+ * - ~~Functions:~~
  * -- ~~Create user~~
  * --- ~~Emails for validation~~
- * -- Get by info
- * -- Delete user
- * --- May fail if linked data is still linked
- * --- Data should be archived or linked to dummy user beforehand
- * -- Modify user
- * --- Mutable field list
- * -- Change password
- * -- Recover password
- * -- Send validation email
- * -- Login user using password
- * -- Validate user using email link
- * -- Second step login
- * -- Create session
- * -- Retrieve session
+ * -- ~~Get by info~~
+ * -- ~~Delete user~~
+ * -- ~~Modify user~~
+ * -- ~~Change password~~
+ * -- ~~Recover password~~
+ * -- ~~Send validation email~~
+ * -- ~~Login user using password~~
+ * -- ~~Validate user using email link~~
+ * -- ~~Second step login~~
  * - ~~Password protection (Salt, CSPRNG, bcrypt)~~
  * - ~~Password complexity checking~~
  * -- ~~http://its.ucsc.edu/policies/password.html~~
  * -- ~~May be appended later~~
- * - Password recovery
+ * - ~~Password recovery~~
  * - Connected accounts
  * - ~~Ambiguous error pages~~
- * - Email system with validation
- * - Token system for alpha and beta sign-ups
- * Session management
+ * - ~~Email system with validation~~
+ * - ~~Token system for alpha and beta sign-ups~~
  * Brute force protection
- * Admin section
- * - Admin 2-step (OAUTH)
+ * ~~Admin section~~
+ * - ~~Admin 2-step (OATH)~~
  * - ~~SSL client authorization~~
  * ~~SSL (StartSSL)~~
-* Graphical interface for accounts [v1]
+* **Graphical interface for accounts** [v1]
+ * Session management
 * Database layout for general node system [v1]
 * Graphical interface for general node system [v1]
 * In-house module API database layout [v1]
@@ -439,6 +434,14 @@ The development checklist is intended to be in as much order as it can be. Some 
 * Complete print-out system with scan-ins [v3]
 * Open general API [v3]
 * Mobile apps [v3]
+ 
+### Development Costs
+
+Development costs are as follows; not that this may include academically free products that are normally paid.
+
+* Github - Free, savings of $7/m
+* DigitalOcean - $50 credit (10 months free)
+* PyCharm - $30, savings of $70
 
 Project Versioning
 ------------------

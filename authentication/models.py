@@ -10,8 +10,8 @@ operate on select models. If repetitive or lengthy functions are
 required elsewhere, they should be defined here. Constants from this
 file should also be used wherever possible.
 """
-import base64
 
+import base64
 from django.db import models
 import onetimepass as otp
 import pytz
@@ -181,7 +181,7 @@ class UserManager(models.Manager):
 
         # Hashes password using bcrypt
         encrypted_password = bcrypt.hashpw(
-            validated['password'].encode('utf-8'), bcrypt.gensalt(
+            validated['password'].encode('utf-8').strip(), bcrypt.gensalt(
             SALT_ROUNDS))
 
         # Deletes password from info so it doesn't get inserted on creation
@@ -281,8 +281,8 @@ class UserManager(models.Manager):
             raise UserError(*user_errors)
 
         user_password = method_object.password.encode('utf-8')
-        test_password = bcrypt.hashpw(validated['password'].encode('utf-8'),
-                                 user_password)
+        test_password = bcrypt.hashpw(validated['password'].encode('utf-8')
+                                      .strip(), user_password)
 
         # Deletes original password to prevent later misuse
         del validated['password']
@@ -573,7 +573,7 @@ class Users(models.Model):
                 user_errors.append(_('old-password-required'))
             else:
                 user_password = password_method.password.encode('utf-8')
-                test_password = bcrypt.hashpw(old.encode('utf-8'),
+                test_password = bcrypt.hashpw(old.encode('utf-8').strip(),
                                             user_password)
 
                 del old

@@ -181,7 +181,7 @@ class UserManager(models.Manager):
 
         # Hashes password using bcrypt
         encrypted_password = bcrypt.hashpw(
-            validated['password'].encode('utf-8').strip(), bcrypt.gensalt(
+            validated['password'].encode('utf-8'), bcrypt.gensalt(
             SALT_ROUNDS))
 
         # Deletes password from info so it doesn't get inserted on creation
@@ -281,8 +281,8 @@ class UserManager(models.Manager):
             raise UserError(*user_errors)
 
         user_password = method_object.password.encode('utf-8')
-        test_password = bcrypt.hashpw(validated['password'].encode('utf-8')
-                                      .strip(), user_password)
+        test_password = bcrypt.hashpw(validated['password'].encode('utf-8'),
+                                      user_password)
 
         # Deletes original password to prevent later misuse
         del validated['password']

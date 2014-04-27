@@ -72,7 +72,7 @@ VALID_TOKEN_REGEX = re.compile(r'^[A-Za-z0-9]{1,50}$')
 
 def list_errors(multiple_invalid_exception):
     """Helper function that extracts errors from MultipleInvalid.
-    
+
     Takes the target assignment (e in except MultipleInvalid as e) and
     iterates error messages, returning tuple of error codes found.
     """
@@ -82,34 +82,34 @@ def list_errors(multiple_invalid_exception):
 
     error_list = []
     errors = multiple_invalid_exception.errors
-    
+
     for error in errors:
         error_list.append(error.error_message)
-    
+
     return tuple(error_list)
 
 
 @truth
 def Password(password):
     """Validator that checks to make sure a password is valid."""
-    
-    match = VALID_PASSWORD_REGEX.match(password)
-    
+
+    match = VALID_PASSWORD_REGEX.match(password.strip())
+
     if not match:
         return False
-    
+
     captures = match.groupdict()
     condition_keys = ('lower', 'upper', 'number', 'special')
     num_conditions = 3 # Number of conditions required
-    
+
     if captures['phrase']:
         return True
     else:
         # List comprehension that sums the number of met conditions
         count = sum(1 for key in captures.keys() if key in condition_keys\
                     and captures[key])
-        
+
         if count >= num_conditions:
             return True
-    
+
     return False

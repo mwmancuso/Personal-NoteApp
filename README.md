@@ -327,6 +327,15 @@ A new user is presented with a tutorial about how to use the application that is
 
 The notebook canvas is where the user will spend most of his or her time. The canvas takes up the entire screen once a notebook is selected. The main attractions of the canvas are the nodes. They will take up the entire screen if no modules are opened. Depending on the previous layout, these nodes may be arranged in a linear fashion, a web view, or other layouts defined by modules. The node layout may be changed via a floating selector. Different markers, such as lines or icons, show connections and information about the nodes. Panel pull-out markers are available on the sides of the canvas. These panels are stackable and paginated. The panels may automatically expand when selecting a node that uses a module. Inside the panels are modules. Depending on the type of modules, they may be listed in a scrollable list, they may be paginated, or a module may take up the entire panel. Modules may be dragged, moved, opened or closed. A search box will float in the canvas and allow for searching the information and also modules. The rest of the functionality in the design boils down to the specificities of the node system and the module system. Those specificities will be constantly developed, and will not be listed here.
 
+###Important Information
+
+####Colors
+
+The color scheme used for the greens in the project is:
+http://colorschemedesigner.com/#3031IsOsOHlvk
+
+The brown in the project is #51382D.
+
 Development Workflow
 --------------------
 
@@ -337,6 +346,10 @@ There are a few central principles that must be defined and points that must be 
 ####Django
 
 Starting this project, Django is used to get a start using Python as a web programming language. Django offers a few features that could benefit this project. However, it is important to realize that a migration away from Django is expected in the future. Django may still be used as a wrapper, but many of its functions will be replaced by home-brewn functions. Development of this project must realize this. Different apps in Django should be replaceable by custom modules one at a time, so that Django can eventually be pushed out. There are no personal vendettas against Django here, however this project may require customization that extend beyond the customization offered by Django.
+
+####Django Views
+
+Most of this project will be AJAX on the client side. App-specific views will generally simply be AJAX handlers, with most UX views in the "common" package.
 
 ####Modularity
 

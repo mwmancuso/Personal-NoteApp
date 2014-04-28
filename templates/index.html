@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SpruceNotes</title>
+    <link rel="shortcut icon" href="/favicon.ico?v=0.0.0">
+    <link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="/scripts/index.js"></script>
+</head>
+<body>
+<div id="container">
+    <div id="header">
+        <div id="logo">
+            <a href="#" title="SpruceNotes Home">SpruceNotes</a>
+        </div>
+        <div id="nav">
+            <ul id="nav_links">
+                <li><a href="#">About</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="content">
+        <div id="illustration">
+
+        </div>
+        <div id="account">
+            <div class="selector">
+                <a href="javascript:void(0);" id="register_selector"
+                        style="color: #10A057">Register</a> |
+                <a href="javascript:void(0);" id="login_selector">Login</a>
+            </div>
+            <div id="register" class="account_field">
+                <form action="#register" method="post">
+                    <label>Username
+                        <input name="username" type="text" class="text" />
+                    </label>
+                    <label>Email
+                        <input name="email" type="email" class="text" />
+                    </label>
+                    <label>Password
+                        <input name="password" type="password" class="text" />
+                    </label>
+                    {% if token_required %}
+                    <label>Token
+                        <input name="token" type="text" class="text" />
+                    </label>
+                    {% endif %}
+                    <input type="submit" class="button" value="Register" />
+                </form>
+            </div>
+            <div id="login" class="account_field" style="display: none">
+                <form action="#login" method="post">
+                    <label>Username
+                        <input name="username" type="text" class="text" />
+                    </label>
+                    <label>Password
+                        <input name="password" type="password" class="text" />
+                    </label>
+                    <input type="submit" class="button" value="Register" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

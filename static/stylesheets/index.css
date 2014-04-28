@@ -1,0 +1,137 @@
+/* Fertigo Pro font from FontSpring.com */
+@font-face {
+  font-family: 'FertigoProRegular';
+  src: url('/static/fonts/Fertigo_PRO-webfont.eot');
+  src: url('/static/fonts/Fertigo_PRO-webfont.eot?#iefix') format('embedded-opentype'),
+       url('/static/fonts/Fertigo_PRO-webfont.woff') format('woff'),
+       url('/static/fonts/Fertigo_PRO-webfont.ttf') format('truetype'),
+       url('/static/fonts/Fertigo_PRO-webfont.svg#FertigoProRegular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  background: url('/static/images/background-block-light.jpg') repeat;
+  font-family: serif;
+}
+
+#container {
+  width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+  top: 0px;
+}
+
+#header {
+  width: 100%;
+  height: 120px;
+  padding: 10px 0;
+}
+
+#logo {
+  background: url('/static/images/large-logo.png') no-repeat;
+  width: 256px;
+  height: 100px;
+  margin: 0;
+  float: left;
+  cursor: hand;
+}
+
+#logo a {
+  width: 100%;
+  height: 100%;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+  outline: none;
+}
+
+#nav {
+  margin-top: 55px;
+  height: 30px;
+  float: right;
+}
+
+#nav_links {
+  font-family: FertigoProRegular, serif;
+  display: inline-block;
+  font-size: 16pt;
+  margin: 0px;
+  padding: 0px;
+}
+
+#nav_links li {
+  padding-left: 50px;
+  display: inline;
+  vertical-align: middle;
+  line-height: 30px;
+}
+
+#nav_links li a {
+  color: #51382c;
+  text-decoration: none;
+}
+
+#nav_links li a:hover {
+  color: #10A057;
+}
+
+#content {
+  width: 100%;
+}
+
+#illustration {
+  background: url('/static/images/placeholder.png') no-repeat;
+  height: 556px;
+  width: 411px;
+  float: left;
+}
+
+#account {
+  float: right;
+  border: #51382c solid 2px;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  padding: 10px;
+}
+
+#account .selector {
+  width: 100%;
+  text-align: center;
+  color: #51382c;
+  margin-bottom: 10px;
+}
+
+#account .selector a {
+  color: #51382c;
+  text-decoration: none;
+}
+
+#account .selector a:hover {
+  color: #10A057;
+}
+
+div.account_field form input {
+  border: #51382c solid 1px;
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  display: block;
+}
+
+div.account_field form input.text {
+  background: transparent;
+  width: 300px;
+  height: 30px;
+  margin-bottom: 10px;
+}
+
+div.account_field form input.button {
+  background: #10A057;
+  width: 80px;
+  height: 30px;
+  margin-left: auto;
+  margin-right: auto;
+}

@@ -4,6 +4,7 @@
 Notesapp.wsgi
 django.mo
 Notesapp/environment.py
-static/images/
-static/fonts/
+static/images
+static/fonts
+static/media
 static/favicon.*

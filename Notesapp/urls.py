@@ -12,7 +12,7 @@ urlpatterns = patterns('',
     # TODO Organize this somehow
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^backend/', include('backend.urls')),
+    url(r'^backend/', include('backend.v1_0_0.urls')),
 
     url(r'^$', 'common.views.index', name='index'),
 )

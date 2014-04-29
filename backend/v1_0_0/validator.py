@@ -2,11 +2,11 @@
 
 from django.views.generic import View
 
-from api.generic import ApiMixin
+from backend.v1_0_0.generic import BackendApiMixin
 from errors import validators
 
-class PasswordValidatorView(ApiMixin, View):
-    """API view that validates POST 'password' against validator."""
+class PasswordValidatorView(BackendApiMixin, View):
+    """Backend view that validates POST 'password' against validator."""
 
     def post(self, request, *args, **kwargs):
         """Handles PasswordValidatorView POST API response."""

@@ -3,9 +3,11 @@
 <head>
     <title>SpruceNotes</title>
     <link rel="shortcut icon" href="/favicon.ico?v=0.0.0">
-    <link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/index.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="/scripts/index.js"></script>
+    <script src="/static/scripts/parsley.remote.min.js"></script>
+    <script src="/static/scripts/parsley.min.js"></script>
+    <script src="/static/scripts/index.js"></script>
 </head>
 <body>
 <div id="container">
@@ -22,8 +24,9 @@
         </div>
     </div>
     <div id="content">
-        <div id="illustration">
-
+        <div id="teaser">
+        Don't waste paper.<br />
+        Use SpruceNotes.
         </div>
         <div id="account">
             <div class="selector">
@@ -32,15 +35,28 @@
                 <a href="javascript:void(0);" id="login_selector">Login</a>
             </div>
             <div id="register" class="account_field">
-                <form action="#register" method="post">
+                <form action="#" method="post" id="register_form"
+                        data-parsley-validate>
+                    {% csrf_token %}
                     <label>Username
-                        <input name="username" type="text" class="text" />
+                        <input name="username" type="text" class="text"
+                                data-parsley-trigger="change"
+                                pattern="^[A-Za-z0-9_]{1,50}$" required
+                                />
                     </label>
                     <label>Email
-                        <input name="email" type="email" class="text" />
+                        <input name="email" type="email" class="text"
+                                data-parsley-trigger="change" required
+                                />
                     </label>
                     <label>Password
-                        <input name="password" type="password" class="text" />
+                        <input name="password" type="password" class="text"
+                                data-parsley-trim-value="true"
+                                data-parsley-remote="/validators/password"
+                                data-parsley-remote-message="Invalid pass."
+                                data-parsley-remote-options='{ "type": "POST", "data": {"csrfmiddlewaretoken":"{{csrf_token}}"} }'
+                                required
+                                />
                     </label>
                     {% if token_required %}
                     <label>Token

@@ -26,6 +26,7 @@ body {
   width: 100%;
   height: 120px;
   padding: 10px 0;
+  border-bottom: #51382c solid 2px;
 }
 
 #logo {
@@ -79,21 +80,32 @@ body {
 
 #content {
   width: 100%;
+  overflow: hidden;
+  padding: 15px;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;
 }
 
-#illustration {
-  background: url('/static/images/placeholder.png') no-repeat;
-  height: 556px;
-  width: 411px;
+#teaser {
+  /* Stuff for a later date
+  background: url('/static/images/journal.png') no-repeat;
+  height: 433px;
+  width: 450px;*/
   float: left;
+  font-family: FertigoProRegular, serif;
+  color: #51382c;
+  font-size: 32pt;
+  padding-left: 10px;
+  text-align: center;
 }
 
 #account {
   float: right;
-  border: #51382c solid 2px;
+  /*border: #51382c solid 2px;
   border-radius: 4px;
   -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
+  -webkit-border-radius: 4px;*/
   padding: 10px;
 }
 
@@ -134,4 +146,28 @@ div.account_field form input.button {
   height: 30px;
   margin-left: auto;
   margin-right: auto;
+}
+
+ul.parsley-errors-list {
+  display: block;
+  margin: 0px;
+  padding: 0px;
+}
+
+ul.parsley-errors-list.filled {
+  margin-bottom: 10px;
+}
+
+ul.parsley-errors-list li {
+  display: block;
+  color: #ff0000;
+}
+
+div.account_field form input.parsley-success {
+  background-color: #13e082;
+}
+
+div.account_field form input.parsley-error {
+  background-color: #ffaaaa;
+  margin-bottom: 0px;
 }

@@ -1,4 +1,5 @@
 from django.shortcuts import render, render_to_response
+from django.template import RequestContext
 import meta.models
 
 def index(request):
@@ -8,4 +9,7 @@ def index(request):
     if token_object.setting == 0 and token_object.data == 'token':
         token_required = True
 
-    return render_to_response('index.html', {'token_required': token_required})
+    data = {'token_required': token_required}
+
+    return render_to_response('index.html', data,
+                              context_instance=RequestContext(request))

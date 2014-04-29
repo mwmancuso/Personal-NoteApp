@@ -5,8 +5,8 @@ $(document).ready(function () {
     $('#register_selector').click(function (event) {
         $('#register_selector').css('color', '#10A057');
         $('#login_selector').css('color', '#51382c');
-        $('#register').css('display', 'block');
         $('#login').css('display', 'none');
+        $('#register').css('display', 'block');
     });
     $('#login_selector').click(function (event) {
         $('#register_selector').css('color', '#51382c');
@@ -15,3 +15,5 @@ $(document).ready(function () {
         $('#login').css('display', 'block');
     });
 });
+
+$('#register_form').parsley();

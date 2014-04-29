@@ -3,6 +3,9 @@ from django.template import RequestContext
 import meta.models
 
 def index(request):
+    # TODO Add docstring here
+    # TODO Make wrapper for RequestContext
+    # TODO Clean up view code here
     token_required = False
     token_object = meta.models.Data.objects.get(tag='new-users')
 

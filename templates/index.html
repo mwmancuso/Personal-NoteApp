@@ -1,3 +1,5 @@
+{# TODO Set HTML definition #}
+{# TODO Add template tags, split files #}
 <!DOCTYPE html>
 <html>
 <head>
@@ -24,7 +26,9 @@
         </div>
     </div>
     <div id="content">
+        {# TODO Add About, Features and Contact section; perhaps use SUPERSCROLLORAMA #}
         <div id="teaser">
+        {# TODO Fix teaser #}
         Don't waste paper.<br />
         Use SpruceNotes.
         </div>
@@ -38,6 +42,10 @@
                 <form action="#" method="post" id="register_form"
                         data-parsley-validate>
                     {% csrf_token %}
+                    {# TODO Make form multi-part #}
+                    {# TODO Clean up form code #}
+                    {# TODO Check existance of username and email (remember brute force) #}
+                    {# TODO Use Globalization #}
                     <label>Username
                         <input name="username" type="text" class="text"
                                 data-parsley-trigger="change"

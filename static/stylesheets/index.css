@@ -1,3 +1,5 @@
+/* TODO Give CSS definition */
+/* TODO Clean up CSS */
 /* Fertigo Pro font from FontSpring.com */
 @font-face {
   font-family: 'FertigoProRegular';
@@ -147,6 +149,8 @@ div.account_field form input.button {
   margin-left: auto;
   margin-right: auto;
 }
+
+/* TODO Finish Parsley CSS definitions */
 
 ul.parsley-errors-list {
   display: block;

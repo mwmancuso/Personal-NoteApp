@@ -4,6 +4,9 @@ import json
 from errors import validators
 
 def password_validator(request):
+    # TODO Make docstring
+    # TODO Clean up view here
+    # TODO Make wrapper for JSON responses
     if request.method != 'POST':
         return HttpResponse(json.dumps({'error': 'Post required.'}),
                             content_type='application/json',

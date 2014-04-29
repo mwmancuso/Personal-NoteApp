@@ -807,7 +807,8 @@ class SMTP:
         # unambiguously determine which one is the most recent in all cases,
         # so rather than guess we raise a ValueError in that case.
         #
-        # TODO implement heuristics to guess the correct Resent-* block with an
+        # TO DO implement heuristics to guess the correct Resent-* block
+        # with an
         # option allowing the user to enable the heuristics.  (It should be
         # possible to guess correctly almost all of the time.)
 

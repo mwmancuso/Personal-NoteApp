@@ -1,5 +1,6 @@
 /*jslint browser:true*/
 /*globals jQuery,$*/
+/* TODO add definition */
 $(document).ready(function () {
     'use strict';
     $('#register_selector').click(function (event) {
@@ -14,6 +15,5 @@ $(document).ready(function () {
         $('#register').css('display', 'none');
         $('#login').css('display', 'block');
     });
+    $('#register_form').parsley();
 });
-
-$('#register_form').parsley();

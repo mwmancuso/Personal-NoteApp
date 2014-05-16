@@ -100,7 +100,7 @@ def Password(password):
 
     captures = match.groupdict()
     condition_keys = ('lower', 'upper', 'number', 'special')
-    num_conditions = 3 # Number of conditions required
+    num_conditions = 2 # Number of conditions required
 
     if captures['phrase']:
         return True

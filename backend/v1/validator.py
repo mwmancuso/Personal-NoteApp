@@ -2,7 +2,7 @@
 
 from django.views.generic import View
 
-from backend.v1_0_0.generic import BackendApiMixin
+from backend.v1.generic import BackendApiMixin
 from errors import validators
 
 class PasswordValidatorView(BackendApiMixin, View):

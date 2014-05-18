@@ -432,6 +432,7 @@ The development checklist is intended to be in as much order as it can be. Some 
 * In-house module API [v1]
 * Backend system [v1]
 * In-house modules (list should be established at this point) [v1]
+* Revamp graphical interface [v1]
 * Move to DigitalOcean [v1]
 * Local email system [v1]
 * Simple transfer print-out sheets [v1]

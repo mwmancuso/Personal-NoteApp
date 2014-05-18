@@ -1,1 +1,1 @@
-# TODO Add docstring
+"""Version 1 of the Notesapp API."""

@@ -1,4 +1,5 @@
-# TODO Docstring
+"""Metadata key-value pair model."""
+
 from django.db import models
 
 DEFAULT_DATA = {
@@ -30,14 +31,6 @@ class Data(models.Model):
 
     setting field is for simple numerical values.
     data field is for extra data.
-
-    Current tags:
-    new-users:
-        1: yes
-        0: no
-    user-login:
-        1: yes
-        0: no
     """
 
     tag = models.CharField(max_length=30, unique=True)

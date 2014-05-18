@@ -1,4 +1,4 @@
-# TODO Docstring
+"""Validator backend, handles client-side validation."""
 
 from django.views.generic import View
 

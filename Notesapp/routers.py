@@ -1,4 +1,8 @@
-# TODO Docstring
+"""Django database router definition.
+
+Maps specific actions to specific databases or users.
+"""
+
 # Define database definitions to use for specific apps
 app_databases = {
     'authentication': {

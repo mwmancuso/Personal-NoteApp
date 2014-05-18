@@ -1,1 +1,1 @@
-# TODO Docstring
+"""Error package; handles errors for project."""

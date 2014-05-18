@@ -1,4 +1,4 @@
-# TODO Docstring
+"""Primary URL router for Notesapp."""
 
 from django.conf.urls import patterns, include, url
 from django.contrib import admin

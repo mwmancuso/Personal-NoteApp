@@ -1,1 +1,1 @@
-# TODO Docstring
+"""Authentication module for Django."""

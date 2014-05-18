@@ -1,4 +1,5 @@
-# TODO Docstring
+"""Default URL router for backend."""
+
 from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',

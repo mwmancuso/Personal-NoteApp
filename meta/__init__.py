@@ -1,1 +1,1 @@
-# TODO Docstring
+"""Metadata app for project. Manages site-wide key-value pairs."""

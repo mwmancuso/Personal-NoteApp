@@ -11,10 +11,10 @@ import json
 class BackendApiMixin(object):
     """Default backend API view mixin; responds with JSON.
 
-    Has attributes:
-    * message: JSON message for response
-    * data: dictionary of data to send to JSON parser
-    * status: HTTP status code
+    Attributes:
+        message: JSON message for response
+        data: dictionary of data to send to JSON parser
+        status: HTTP status code
     """
 
     message = ''
@@ -22,7 +22,11 @@ class BackendApiMixin(object):
     status = 200
 
     def construct_json(self):
-        """Constructs JSON from given data."""
+        """Constructs JSON from given data.
+
+        Returns:
+            A string consisting of JSON formatted data.
+        """
 
         if 'message' not in self.data:
             self.data['message'] = self.message
@@ -35,7 +39,14 @@ class BackendApiMixin(object):
         return json.dumps(self.data)
 
     def json_response(self, request, *args, **kwargs):
-        """Returns parsed JSON response."""
+        """Returns parsed JSON response.
+
+        Args:
+            request: The request object to act upon.
+
+        Returns:
+            An HttpResponse object for response.
+        """
 
         return HttpResponse(self.construct_json(),
                             content_type='application/json',

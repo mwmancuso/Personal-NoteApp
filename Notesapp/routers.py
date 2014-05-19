@@ -1,8 +1,14 @@
+"""Django database router definition.
+
+Maps specific actions to specific databases or users.
+"""
+
 # Define database definitions to use for specific apps
 app_databases = {
     'authentication': {
-        'rw':   'authentication',
-        'ro':   'authentication_ro'
+        'rw': 'authentication',
+        'ro': 'authentication_ro',
+        'relation': True,
     }
 }
 
@@ -13,10 +19,18 @@ class AppRouter(object):
             return app_databases[model._meta.app_label]['ro']
         else:
             return 'default'
-    
-    
+
+
     def db_for_write(self, model, **hints):
         if model._meta.app_label in app_databases:
             return app_databases[model._meta.app_label]['rw']
         else:
             return 'default'
+
+    def allow_relation(self, obj1, obj2, **hints):
+        if obj1._meta.app_label in app_databases or\
+            obj2._meta.app_label in app_databases:
+            return app_databases[obj1._meta.app_label]['relation'] or\
+                app_databases[obj2._meta.app_label]['relation']
+        else:
+            return None

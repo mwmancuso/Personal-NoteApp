@@ -1,0 +1,58 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-05-19 18:56-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: home.html:35
+msgid "invalid-username"
+msgstr "The username is invalid."
+
+#: home.html:37
+msgid "username-not-available"
+msgstr "This username isn't available."
+
+#: home.html:40
+msgid "username-required"
+msgstr "A username is required."
+
+#: home.html:47 home.html.py:54
+msgid "invalid-name"
+msgstr "This name is invalid."
+
+#: home.html:61
+msgid "invalid-email"
+msgstr "This email is invalid."
+
+#: home.html:63
+msgid "email-not-available"
+msgstr "This email isn't available."
+
+#: home.html:65
+msgid "email-required"
+msgstr "An email is required."
+
+#: home.html:74
+msgid "invalid-password"
+msgstr "This password is invalid."
+
+#: home.html:76
+msgid "password-required"
+msgstr "A password is invalid."
+
+#: home.html:84
+msgid "token-required"
+msgstr "A token is required."

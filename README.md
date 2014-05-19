@@ -327,6 +327,15 @@ A new user is presented with a tutorial about how to use the application that is
 
 The notebook canvas is where the user will spend most of his or her time. The canvas takes up the entire screen once a notebook is selected. The main attractions of the canvas are the nodes. They will take up the entire screen if no modules are opened. Depending on the previous layout, these nodes may be arranged in a linear fashion, a web view, or other layouts defined by modules. The node layout may be changed via a floating selector. Different markers, such as lines or icons, show connections and information about the nodes. Panel pull-out markers are available on the sides of the canvas. These panels are stackable and paginated. The panels may automatically expand when selecting a node that uses a module. Inside the panels are modules. Depending on the type of modules, they may be listed in a scrollable list, they may be paginated, or a module may take up the entire panel. Modules may be dragged, moved, opened or closed. A search box will float in the canvas and allow for searching the information and also modules. The rest of the functionality in the design boils down to the specificities of the node system and the module system. Those specificities will be constantly developed, and will not be listed here.
 
+###Important Information
+
+####Colors
+
+The color scheme used for the greens in the project is:
+http://colorschemedesigner.com/#3031IsOsOHlvk
+
+The brown in the project is #51382D.
+
 Development Workflow
 --------------------
 
@@ -337,6 +346,10 @@ There are a few central principles that must be defined and points that must be 
 ####Django
 
 Starting this project, Django is used to get a start using Python as a web programming language. Django offers a few features that could benefit this project. However, it is important to realize that a migration away from Django is expected in the future. Django may still be used as a wrapper, but many of its functions will be replaced by home-brewn functions. Development of this project must realize this. Different apps in Django should be replaceable by custom modules one at a time, so that Django can eventually be pushed out. There are no personal vendettas against Django here, however this project may require customization that extend beyond the customization offered by Django.
+
+####Django Views
+
+Most of this project will be AJAX on the client side. App-specific views will generally simply be AJAX handlers, with most UX views in the "common" package.
 
 ####Modularity
 
@@ -374,37 +387,54 @@ This checklist is to be modified as development proceeds. Development and this c
 
 The development checklist is intended to be in as much order as it can be. Some pieces of development will depend on others, so many will be developed concurrently, but an effort will be made to keep the checklist in chronological order. The checklist:
 
-* **Error handling** [v1]
- * User errors
- * - Exception class
- * - String handler
- * System errors
- * - Logging system
- * Validator methods
-* Locality [v1]
-* Login/account system [v1]
+* ~~Error handling~~ [v1]
+ * ~~User errors~~
+ * - ~~Exception class~~
+ * - ~~String handler~~
+ * ~~System errors~~
+ * - ~~Logging system~~
+ * ~~Validator methods~~
+* ~~Locality~~ [v1]
+* ~~Login/account system~~ [v1]
  * ~~Database structure~~
- * Login system methods
- * - Password protection (Salt, CSPRNG, bcrypt)
- * - Password complexity checking
- * -- http://its.ucsc.edu/policies/password.html
- * -- May be appended later
- * - Password recovery
+ * ~~Login system methods~~
+ * - ~~Functions:~~
+ * -- ~~Create user~~
+ * --- ~~Emails for validation~~
+ * -- ~~Get by info~~
+ * -- ~~Delete user~~
+ * -- ~~Modify user~~
+ * -- ~~Change password~~
+ * -- ~~Recover password~~
+ * -- ~~Send validation email~~
+ * -- ~~Login user using password~~
+ * -- ~~Validate user using email link~~
+ * -- ~~Second step login~~
+ * - ~~Password protection (Salt, CSPRNG, bcrypt)~~
+ * - ~~Password complexity checking~~
+ * -- ~~http://its.ucsc.edu/policies/password.html~~
+ * -- ~~May be appended later~~
+ * - ~~Password recovery~~
  * - Connected accounts
- * - Ambiguous error pages
- * Session management
- * Brute force protection
- * Admin section
- * - Admin 2-step (OAUTH)
+ * - ~~Ambiguous error pages~~
+ * - ~~Email system with validation~~
+ * - ~~Token system for alpha and beta sign-ups~~
+ * ~~Brute force protection~~
+ * ~~Admin section~~
+ * - ~~Admin 2-step (OATH)~~
  * - ~~SSL client authorization~~
  * ~~SSL (StartSSL)~~
-* Graphical interface for accounts [v1]
-* Database layout for general node system [v1]
+* ~~Barebone graphical inferface~~ [v1]
+ * ~~Session management~~
+* **Database layout for general node system** [v1]
 * Graphical interface for general node system [v1]
 * In-house module API database layout [v1]
 * In-house module API [v1]
 * Backend system [v1]
+* Revamp graphical interface [v1]
 * In-house modules (list should be established at this point) [v1]
+* Move to DigitalOcean [v1]
+* Local email system [v1]
 * Simple transfer print-out sheets [v1]
 * Project name [v1]
 * User tutorial [v1]
@@ -418,6 +448,14 @@ The development checklist is intended to be in as much order as it can be. Some 
 * Complete print-out system with scan-ins [v3]
 * Open general API [v3]
 * Mobile apps [v3]
+ 
+### Development Costs
+
+Development costs are as follows; not that this may include academically free products that are normally paid.
+
+* Github - Free, savings of $7/m
+* DigitalOcean - $50 credit (10 months free)
+* PyCharm - $30, savings of $70
 
 Project Versioning
 ------------------

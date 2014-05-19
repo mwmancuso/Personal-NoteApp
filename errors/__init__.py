@@ -1,0 +1,1 @@
+"""Error package; handles errors for project."""

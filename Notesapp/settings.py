@@ -11,7 +11,8 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 import os
 from Notesapp.environment import SECRET_KEY, DATABASES, DEBUG,\
     TEMPLATE_DEBUG, LOGGING_FILENAME, EMAIL_HOST, EMAIL_PORT,\
-    EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_TLS, SITE_PATH
+    EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_TLS, SITE_PATH,\
+    STATIC_ROOT
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -76,9 +77,15 @@ LANGUAGES = (
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'Notesapp/locale/'),
+    os.path.join(BASE_DIR, 'api/locale/'),
+    os.path.join(BASE_DIR, 'authentication/locale/'),
+    os.path.join(BASE_DIR, 'backend/locale/'),
+    os.path.join(BASE_DIR, 'common/locale/'),
+    os.path.join(BASE_DIR, 'errors/locale/'),
+    os.path.join(BASE_DIR, 'templates/locale/'),
 )
 
-TIME_ZONE = 'America/New_York'
+TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
@@ -91,7 +98,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/notes.xpandismo.com/static/'
 
 # Logging
 # https://docs.djangoproject.com/en/1.6/topics/logging/
@@ -140,5 +146,18 @@ LOGGING = {
             'level': LOGGING_LEVEL,
             'propogate': False,
         }
+    },
+}
+
+TEMPLATE_DIRS = (
+    os.path.join(BASE_DIR, 'templates')
+)
+
+# Cache Definition
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'default_cache',
     },
 }

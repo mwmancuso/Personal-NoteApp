@@ -1,17 +1,17 @@
 """Models defining all authentication related operations.
 
-Has three models:
-* Users: handles all users; admins have separate manager.
-* Methods: login methods for users.
-* Tokens: handles tokens for various authentication matters.
+Models:
+    Users: handles all users; admins have separate manager.
+    Methods: login methods for users.
+    Tokens: handles tokens for various authentication matters.
 
 Each model has related functions and managers that may be called to
 operate on select models. If repetitive or lengthy functions are
 required elsewhere, they should be defined here. Constants from this
 file should also be used wherever possible.
 """
-import base64
 
+import base64
 from django.db import models
 import onetimepass as otp
 import pytz
@@ -69,10 +69,39 @@ class UserManager(models.Manager):
     Other managers allow for operation on other specific user-types.
     """
 
-    # Limits this manager to standard users only.
-    def get_queryset(self):
-        return super(UserManager, self).get_queryset().filter(
-            user_type=USER_STANDARD)
+    def user_exists(self, username):
+        """Checks to see if user exists.
+
+        Args:
+            username: username to test, can be any case.
+
+        Returns:
+            Bool; true if exists, false if not.
+        """
+
+        try:
+            self.get_queryset().get(username__iexact=username)
+        except Users.DoesNotExist:
+            return False
+
+        return True
+
+    def email_exists(self, email):
+        """Checks to see if email exists.
+
+        Args:
+            email: username to test, can be any case.
+
+        Returns:
+            Bool; true if exists, false if not.
+        """
+
+        try:
+            self.get_queryset().get(email__iexact=email)
+        except Users.DoesNotExist:
+            return False
+
+        return True
 
     def create(self, **user_info):
         """Creates user based on defined variables.
@@ -86,13 +115,21 @@ class UserManager(models.Manager):
         Following are the info variables that may need to be
         defined prior to calling create. *s mean the variable is
         required:
+            username*
+            first_name
+            last_name
+            email*
+            password* (plaintext)
+            token - required if new-user setting is set to token
 
-        * username*
-        * first_name
-        * last_name
-        * email*
-        * password* (plaintext)
-        * token - required if new-user setting is set to token
+        Args:
+            user_info: see above.
+
+        Returns:
+            The user object if successful.
+
+        Raises:
+            UserError: describes error.
         """
 
         user_errors = []
@@ -140,6 +177,8 @@ class UserManager(models.Manager):
             del user_info
         except MultipleInvalid as error:
             user_errors = validators.list_errors(error)
+
+            raise UserError(*user_errors)
 
         current_user = self.get_queryset().filter(
             username__iexact=validated['username'])
@@ -234,6 +273,16 @@ class UserManager(models.Manager):
         Accepts two pieces of information: username and password. Both
         are required. Validates, checks and returns user object if user
         exists and password is correct.
+
+        Args:
+            update_access: boolean, updates database access time.
+            user_info: see above.
+
+        Returns:
+            User object if successful.
+
+        Raises:
+            UserError: contains description.
         """
 
         user_errors = []
@@ -282,7 +331,7 @@ class UserManager(models.Manager):
 
         user_password = method_object.password.encode('utf-8')
         test_password = bcrypt.hashpw(validated['password'].encode('utf-8'),
-                                 user_password)
+                                      user_password)
 
         # Deletes original password to prevent later misuse
         del validated['password']
@@ -306,6 +355,16 @@ class UserManager(models.Manager):
         Takes standard password credentials and passes them directly to
         login_password function. If successful, proceeds to test second
         authentication methods through use of a TOTP token.
+
+        Args:
+            token: token to authenticate against.
+            user_info: passes to login_password.
+
+        Returns:
+            User object if successful.
+
+        Raises:
+            UserError: contains description.
         """
 
         user_errors = []
@@ -339,6 +398,15 @@ class UserManager(models.Manager):
 
         Accepts username and token; both are required. Deactivates
         recovery token upon calling.
+
+        Args:
+            user_info: see above.
+
+        Returns:
+            User object if successful.
+
+        Raises:
+            UserError: contains description.
         """
 
         user_errors = []
@@ -400,6 +468,7 @@ class AdminManager(UserManager):
 
     # Limits this manager to admin users only.
     def get_queryset(self):
+        """Overrides queryset to select only admins."""
         return super(UserManager, self).get_queryset().filter(
             user_type=USER_ADMIN)
 
@@ -408,7 +477,15 @@ class TokenManager(models.Manager):
     """Manager class for tokens. Provides token-related functions."""
 
     def generate(self, purpose, expiration_delta=TOKEN_TIME):
-        """Generates token for given purpose and adds it to database."""
+        """Generates token for given purpose and adds it to database.
+
+        Args:
+            purpose: use constant purpose flag.
+            expiration_delta: datetime.timedelta
+
+        Returns:
+            Token object for token.
+        """
 
         token = random_string(size=TOKEN_SIZE)
         token_data = dict()
@@ -428,10 +505,9 @@ class Users(models.Model):
 
     Does not store user authentication methods. Fields requiring
     further explanation are as follows:
-
-    * user_type: integer describing the type of user. Includes the following:
-     * 0: standard user
-     * 1: admin user
+        user_type: integer describing the type of user. Includes the following:
+            0: standard user
+            1: admin user
     """
 
     users = UserManager()
@@ -454,6 +530,13 @@ class Users(models.Model):
         Use cautiously, and only for cron cleanups or admin removals.
         All related data must be archived before running this command,
         with an exception for methods, which will be cascaded.
+
+        Args:
+            All passed to superclass delete().
+
+        Raises:
+            UserError: if associated data present.
+            RuntimeError: if user is not defined before deletion.
         """
 
         if not self.id:
@@ -479,6 +562,9 @@ class Users(models.Model):
         out of recreation for the time being.
 
         For now, all deactivated accounts remain deactivated.
+
+        Raises:
+            RuntimeError: if user is not defined before deactivation.
         """
 
         if not self.id:
@@ -511,6 +597,12 @@ class Users(models.Model):
         certain information to be directly modified.
 
         May set up a mechanism to change emails with re-validation.
+
+        Args:
+            user_info: passed to validator and then saved.
+
+        Raises:
+            RuntimeError: if user is not defined before modification.
         """
 
         if not self.id:
@@ -543,8 +635,13 @@ class Users(models.Model):
     def modify_password(self, new=None, check=True, old=None):
         """Optionally checks and sets password for user.
 
-        Note on arguments: new is required. old is only required if
-        check is true.
+        Args:
+            new: required; new password.
+            check: checks if old password is correct.
+            old: required if check is true; old password to test.
+
+        Raises:
+            RuntimeError: if user is not defined before modification.
         """
 
         if not self.id:
@@ -573,7 +670,7 @@ class Users(models.Model):
                 user_errors.append(_('old-password-required'))
             else:
                 user_password = password_method.password.encode('utf-8')
-                test_password = bcrypt.hashpw(old.encode('utf-8'),
+                test_password = bcrypt.hashpw(old.encode('utf-8').strip(),
                                             user_password)
 
                 del old
@@ -591,7 +688,12 @@ class Users(models.Model):
         password_method.save()
 
     def recover(self):
-        """Creates recovery email token and sends it to user."""
+        """Creates recovery email token and sends it to user.
+
+        Raises:
+            RuntimeError: if user is not defined before recovery.
+            UserError: if email fails.
+        """
 
         if not self.id:
             raise RuntimeError('User must be defined to recover account.')
@@ -629,6 +731,12 @@ class Users(models.Model):
         Encodes a ten-character random string and feeds it through a
         base32 encoding. Saves code to database and returns it for user
         user.
+
+        Returns:
+            key: oath key.
+
+        Raises:
+            RuntimeError: if user is not defined before generation.
         """
 
         if not self.id:
@@ -650,7 +758,12 @@ class Users(models.Model):
 
 
     def validate(self, token=None):
-        """Validates account based on emailed token."""
+        """Validates account based on emailed token.
+
+        Raises:
+            RuntimeError: if user is not defined before validation.
+            UserError: if token/username do not match.
+        """
 
         if not self.id:
             raise RuntimeError('User must be defined to validate account.')
@@ -695,7 +808,11 @@ class Users(models.Model):
         self.save()
 
     def set_admin(self):
-        """Sets user_type to that of an admin."""
+        """Sets user_type to that of an admin.
+
+        Raises:
+            RuntimeError: if user is not defined before setting.
+        """
 
         if not self.id:
             raise RuntimeError('User must be defined to update status.')
@@ -704,7 +821,11 @@ class Users(models.Model):
         self.save()
 
     def set_standard(self):
-        """Sets user_type to that of a standard user."""
+        """Sets user_type to that of a standard user.
+
+        Raises:
+            RuntimeError: if user is not defined before setting.
+        """
 
         if not self.id:
             raise RuntimeError('User must be defined to update status.')
@@ -717,21 +838,21 @@ class Users(models.Model):
 
 
 class Methods(models.Model):
-    """Database model for authentication methods. Fields requiring
-    further explanation are as follows:
+    """Database model for authentication methods.
 
-    * method: integer representing method type:
-     * 0: password
-     * 1: validation token
-    * password/token:
-     * only one may be defined; password hashes are often
-     * shorter and quicker and are not arbitrary.
-    * step:
-     * for multi-step authentication, important to be defined.
-     * Numbered by number of step, i.e. 1 for first step.
-    * status: current availability status of the method for the user.
-     * 1: active
-     * 0: inactive
+    Fields requiring further explanation are as follows:
+        method: integer representing method type:
+            0: password
+            1: validation token
+        password/token:
+            only one may be defined; password hashes are often
+                shorter and quicker and are not arbitrary.
+        step:
+            for multi-step authentication, important to be defined.
+                Numbered by number of step, i.e. 1 for first step.
+        status: current availability status of the method for the user.
+            1: active
+            0: inactive
     """
 
     user = models.ForeignKey(Users, on_delete=models.CASCADE)
@@ -746,7 +867,11 @@ class Methods(models.Model):
     expiration = models.DateTimeField(null=True)
 
     def expired(self):
-        """Checks to see if method has been expired yet."""
+        """Checks to see if method has been expired yet.
+
+        Returns:
+            True if expired, false if not.
+        """
 
         # Returns true if no expiration date
         if not self.expiration:
@@ -778,15 +903,17 @@ class Tokens(models.Model):
     # Defines helper functions
 
     def expired(self):
-        """Checks to see if token has been expired or not."""
+        """Checks to see if token has been expired or not.
+
+        Returns:
+            True if expired, false if not.
+        """
 
         # Returns not expired if no expiration date
         if not self.expiration:
             return False
 
         return datetime.datetime.now(pytz.utc) > self.expiration
-
-    # Defines authentication methods
 
     def __str__(self):
         return self.purpose

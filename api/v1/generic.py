@@ -1,0 +1,49 @@
+"""Generic views and mixins for API related tasks."""
+
+from django.http import HttpResponse
+import json
+
+class ApiMixin(object):
+    """Default API view handler; responds with JSON.
+
+    Attributes:
+        message: JSON message for response
+        data: dictionary of data to send to JSON parser
+        status: HTTP status code
+    """
+    # TODO Add method for authenticated APIs
+
+    message = ''
+    data = {}
+    status = 200
+
+    def construct_json(self):
+        """Constructs JSON from given data.
+
+        Returns:
+            A string consisting of JSON formatted data.
+        """
+
+        if 'message' not in self.data:
+            self.data['message'] = self.message
+
+        if self.status == 200:
+            self.data['status'] = 'OK'
+        else:
+            self.data['status'] = 'Not OK'
+
+        return json.dumps(self.data)
+
+    def json_response(self, request, *args, **kwargs):
+        """Returns parsed JSON response.
+
+        Args:
+            request: The request object to act upon.
+
+        Returns:
+            An HttpResponse object for response.
+        """
+
+        return HttpResponse(self.construct_json(),
+                            content_type='application/json',
+                            mimetype='application/json', status=self.status)

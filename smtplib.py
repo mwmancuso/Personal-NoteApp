@@ -2,6 +2,8 @@
 
 '''SMTP/ESMTP client class.
 
+Note that this file was edited by Matt Mancuso for email updates.
+
 This should follow RFC 821 (SMTP), RFC 1869 (ESMTP), RFC 2554 (SMTP
 Authentication) and RFC 2487 (Secure SMTP over TLS).
 
@@ -807,7 +809,8 @@ class SMTP:
         # unambiguously determine which one is the most recent in all cases,
         # so rather than guess we raise a ValueError in that case.
         #
-        # TODO implement heuristics to guess the correct Resent-* block with an
+        # TO DO implement heuristics to guess the correct Resent-* block
+        # with an
         # option allowing the user to enable the heuristics.  (It should be
         # possible to guess correctly almost all of the time.)
 

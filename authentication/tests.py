@@ -1,3 +1,5 @@
+"""Django test module for testing authentication models."""
+
 from django.test import TestCase
 
-# Create your tests here.
+# TODO Create tests

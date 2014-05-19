@@ -1,5 +1,11 @@
 *.pyc
 .*swp
+.idea
 Notesapp.wsgi
 django.mo
 Notesapp/environment.py
+static/images
+static/fonts
+static/media
+static/favicon.*
+Notesapp/scripts

@@ -1,5 +1,7 @@
+{% load i18n %}
 {# TODO Set HTML definition #}
 {# TODO Add template tags, split files #}
+{# TODO Front end localization #}
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,47 +44,52 @@
                 <form action="#" method="post" id="register_form"
                         data-parsley-validate>
                     {% csrf_token %}
-                    {# TODO Use Globalization #}
                     {# TODO Actually send users somewhere #}
                     <label>Username*
                         <input name="username" type="text" class="text"
                                 data-parsley-trigger="change"
-                                data-parsley-pattern-message="Invalid username."
+                                data-parsley-pattern-message="{% trans "invalid-username" %}"
                                 data-parsley-remote="/backend/v1/validator/username"
-                                data-parsley-remote-message="Username is taken."
+                                data-parsley-remote-message="{% trans "username-not-available" %}"
                                 data-parsley-remote-options='{ "type": "POST", "data": {"csrfmiddlewaretoken":"{{csrf_token}}"} }'
-                                pattern="^[A-Za-z0-9_]{1,50}$" required
+                                pattern="^[A-Za-z0-9_]{1,50}$"
+                                data-parsley-required-message="{% trans "username-required" %}"
+                                required
                                 />
                     </label>
                     <label>First Name
                         <input name="first_name" type="text" class="text"
                                 data-parsley-trigger="change"
-                                data-parsley-pattern-message="Invalid name."
+                                data-parsley-pattern-message="{% trans "invalid-name" %}"
                                 pattern="^[A-Za-z0-9]{1,30}$"
                                 />
                     </label>
                     <label>Last Name
                         <input name="last_name" type="text" class="text"
                                 data-parsley-trigger="change"
-                                data-parsley-pattern-message="Invalid name."
+                                data-parsley-pattern-message="{% trans "invalid-name" %}"
                                 pattern="^[A-Za-z0-9]{1,30}$"
                                 />
                     </label>
                     <label>Email*
                         <input name="email" type="email" class="text"
                                 data-parsley-trigger="change"
+                                data-parsley-type-message="{% trans "invalid-email" %}"
                                 data-parsley-remote="/backend/v1/validator/email"
-                                data-parsley-remote-message="Email is taken."
+                                data-parsley-remote-message="{% trans "email-not-available" %}"
                                 data-parsley-remote-options='{ "type": "POST", "data": {"csrfmiddlewaretoken":"{{csrf_token}}"} }'
+                                data-parsley-required-message="{% trans "email-required" %}"
                                 required
                                 />
                     </label>
                     <label>Password*
                         <input name="password" type="password" class="text"
                                 data-parsley-trim-value="true"
+                                data-parsley-trigger="change"
                                 data-parsley-remote="/backend/v1/validator/password"
-                                data-parsley-remote-message="Invalid password."
+                                data-parsley-remote-message="{% trans "invalid-password" %}"
                                 data-parsley-remote-options='{ "type": "POST", "data": {"csrfmiddlewaretoken":"{{csrf_token}}"} }'
+                                data-parsley-required-message="{% trans "password-required" %}"
                                 required
                                 />
                     </label>

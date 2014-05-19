@@ -77,6 +77,12 @@ LANGUAGES = (
 
 LOCALE_PATHS = (
     os.path.join(BASE_DIR, 'Notesapp/locale/'),
+    os.path.join(BASE_DIR, 'api/locale/'),
+    os.path.join(BASE_DIR, 'authentication/locale/'),
+    os.path.join(BASE_DIR, 'backend/locale/'),
+    os.path.join(BASE_DIR, 'common/locale/'),
+    os.path.join(BASE_DIR, 'errors/locale/'),
+    os.path.join(BASE_DIR, 'templates/locale/'),
 )
 
 TIME_ZONE = 'UTC'

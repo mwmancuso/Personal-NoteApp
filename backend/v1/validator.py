@@ -7,8 +7,6 @@ from backend.v1.generic import BackendApiMixin
 from errors import validators
 from ratelimit.mixins import RateLimitMixin
 
-# TODO Globalization
-
 class PasswordValidatorView(BackendApiMixin, View):
     """Backend view that validates POST 'password' against validator."""
 

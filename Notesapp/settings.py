@@ -146,3 +146,12 @@ LOGGING = {
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates')
 )
+
+# Cache Definition
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'default_cache',
+    },
+}

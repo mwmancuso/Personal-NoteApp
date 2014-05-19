@@ -42,32 +42,52 @@
                 <form action="#" method="post" id="register_form"
                         data-parsley-validate>
                     {% csrf_token %}
-                    {# TODO Make form multi-part #}
-                    {# TODO Clean up form code #}
-                    {# TODO Check existance of username and email (remember brute force) #}
                     {# TODO Use Globalization #}
-                    <label>Username
+                    {# TODO Actually send users somewhere #}
+                    <label>Username*
                         <input name="username" type="text" class="text"
                                 data-parsley-trigger="change"
+                                data-parsley-pattern-message="Invalid username."
+                                data-parsley-remote="/backend/v1/validator/username"
+                                data-parsley-remote-message="Username is taken."
+                                data-parsley-remote-options='{ "type": "POST", "data": {"csrfmiddlewaretoken":"{{csrf_token}}"} }'
                                 pattern="^[A-Za-z0-9_]{1,50}$" required
                                 />
                     </label>
-                    <label>Email
-                        <input name="email" type="email" class="text"
-                                data-parsley-trigger="change" required
+                    <label>First Name
+                        <input name="first_name" type="text" class="text"
+                                data-parsley-trigger="change"
+                                data-parsley-pattern-message="Invalid name."
+                                pattern="^[A-Za-z0-9]{1,30}$"
                                 />
                     </label>
-                    <label>Password
+                    <label>Last Name
+                        <input name="last_name" type="text" class="text"
+                                data-parsley-trigger="change"
+                                data-parsley-pattern-message="Invalid name."
+                                pattern="^[A-Za-z0-9]{1,30}$"
+                                />
+                    </label>
+                    <label>Email*
+                        <input name="email" type="email" class="text"
+                                data-parsley-trigger="change"
+                                data-parsley-remote="/backend/v1/validator/email"
+                                data-parsley-remote-message="Email is taken."
+                                data-parsley-remote-options='{ "type": "POST", "data": {"csrfmiddlewaretoken":"{{csrf_token}}"} }'
+                                required
+                                />
+                    </label>
+                    <label>Password*
                         <input name="password" type="password" class="text"
                                 data-parsley-trim-value="true"
                                 data-parsley-remote="/backend/v1/validator/password"
-                                data-parsley-remote-message="Invalid pass."
+                                data-parsley-remote-message="Invalid password."
                                 data-parsley-remote-options='{ "type": "POST", "data": {"csrfmiddlewaretoken":"{{csrf_token}}"} }'
                                 required
                                 />
                     </label>
                     {% if token_required %}
-                    <label>Token
+                    <label>Token*
                         <input name="token" type="text" class="text" />
                     </label>
                     {% endif %}
@@ -82,7 +102,7 @@
                     <label>Password
                         <input name="password" type="password" class="text" />
                     </label>
-                    <input type="submit" class="button" value="Register" />
+                    <input type="submit" class="button" value="Login" />
                 </form>
             </div>
         </div>

@@ -5,6 +5,8 @@ from backend.v1 import validator
 
 validator_list = patterns('',
     url(r'password', validator.PasswordValidatorView.as_view()),
+    url(r'username', validator.UsernameAvailabilityView.as_view()),
+    url(r'email', validator.EmailAvailabilityView.as_view())
 )
 
 urlpatterns = patterns('',

@@ -69,11 +69,39 @@ class UserManager(models.Manager):
     Other managers allow for operation on other specific user-types.
     """
 
-    # Limits this manager to standard users only.
-    def get_queryset(self):
-        """Queryset override to select only standard users."""
-        return super(UserManager, self).get_queryset().filter(
-            user_type=USER_STANDARD)
+    def user_exists(self, username):
+        """Checks to see if user exists.
+
+        Args:
+            username: username to test, can be any case.
+
+        Returns:
+            Bool; true if exists, false if not.
+        """
+
+        try:
+            self.get_queryset().get(username__iexact=username)
+        except Users.DoesNotExist:
+            return False
+
+        return True
+
+    def email_exists(self, email):
+        """Checks to see if email exists.
+
+        Args:
+            email: username to test, can be any case.
+
+        Returns:
+            Bool; true if exists, false if not.
+        """
+
+        try:
+            self.get_queryset().get(email__iexact=email)
+        except Users.DoesNotExist:
+            return False
+
+        return True
 
     def create(self, **user_info):
         """Creates user based on defined variables.

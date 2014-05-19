@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-19 15:11-0400\n"
+"POT-Creation-Date: 2014-05-19 18:56-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -29,19 +29,19 @@ msgstr "The recovery credentials are invalid."
 msgid "creation-disabled"
 msgstr "Account creation is disabled."
 
-#: models.py:152 models.py:297 models.py:413
+#: models.py:152 models.py:299 models.py:415
 msgid "username-required"
 msgstr "A username is required."
 
-#: models.py:154 models.py:298 models.py:414 models.py:613
+#: models.py:154 models.py:300 models.py:416 models.py:615
 msgid "invalid-username"
 msgstr "The username is invalid."
 
-#: models.py:156 models.py:615
+#: models.py:156 models.py:617
 msgid "invalid-first-name"
 msgstr "The first name is invalid."
 
-#: models.py:158 models.py:617
+#: models.py:158 models.py:619
 msgid "invalid-last-name"
 msgstr "The last name is invalid."
 
@@ -49,78 +49,78 @@ msgstr "The last name is invalid."
 msgid "email-required"
 msgstr "An email is required."
 
-#: models.py:161 models.py:619
+#: models.py:161 models.py:621
 msgid "invalid-email"
 msgstr "The email is invalid."
 
-#: models.py:162 models.py:299
+#: models.py:162 models.py:301
 msgid "password-required"
 msgstr "A password is required."
 
-#: models.py:163 models.py:300
+#: models.py:163 models.py:302
 msgid "invalid-password"
 msgstr "The password is invalid."
 
-#: models.py:168 models.py:415 models.py:772
+#: models.py:168 models.py:417 models.py:774
 msgid "token-required"
 msgstr "A token is required."
 
-#: models.py:169 models.py:416 models.py:777 models.py:794
+#: models.py:169 models.py:418 models.py:779 models.py:796
 msgid "invalid-token"
 msgstr "The token is invalid."
 
-#: models.py:185
+#: models.py:187
 msgid "user-exists"
 msgstr "This user exists."
 
-#: models.py:191
+#: models.py:193
 msgid "email-exists"
 msgstr "This email exists."
 
-#: models.py:202
+#: models.py:204
 msgid "no-such-token"
 msgstr "No such token exists."
 
-#: models.py:206
+#: models.py:208
 msgid "token-exhausted"
 msgstr "This token is used."
 
-#: models.py:209 models.py:802
+#: models.py:211 models.py:804
 msgid "token-expired"
 msgstr "This token is expired."
 
-#: models.py:263
+#: models.py:265
 msgid "validation-email-failure"
 msgstr "The validation email failed."
 
-#: models.py:292
+#: models.py:294
 msgid "login-disabled"
 msgstr "Logging in is disabled."
 
-#: models.py:320
+#: models.py:322
 msgid "user-inactive"
 msgstr "The user is not active."
 
-#: models.py:548
+#: models.py:550
 msgid "associated-data-present"
 msgstr "There is data associated with this account."
 
-#: models.py:651
+#: models.py:653
 msgid "new-password-required"
 msgstr "A new password is required."
 
-#: models.py:655
+#: models.py:657
 msgid "invalid-new-password"
 msgstr "The new password is invalid."
 
-#: models.py:668
+#: models.py:670
 msgid "old-password-required"
 msgstr "An old password is required."
 
-#: models.py:677
+#: models.py:679
 msgid "invalid-old-password"
 msgstr "The old password is invalid."
 
-#: models.py:723
+#: models.py:725
 msgid "recovery-email-failure"
 msgstr "The recovery email failed."

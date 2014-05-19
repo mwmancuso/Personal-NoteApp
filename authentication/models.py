@@ -178,6 +178,8 @@ class UserManager(models.Manager):
         except MultipleInvalid as error:
             user_errors = validators.list_errors(error)
 
+            raise UserError(*user_errors)
+
         current_user = self.get_queryset().filter(
             username__iexact=validated['username'])
 

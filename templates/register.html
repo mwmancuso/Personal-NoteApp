@@ -1,0 +1,18 @@
+{# TODO Add HTML definition #}
+{# TODO Front end localization #}
+{% extends "base_home.html" %}
+
+{% block title %}
+    Register | SpruceNotes
+{% endblock %}
+
+{% block content %}
+    {% if register_successful %}
+        You're good to go! Registered and logged in.
+    {% else %}
+        {{ error_string }}<br/>
+        {% for error in errors %}
+            {{ error }}<br/>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

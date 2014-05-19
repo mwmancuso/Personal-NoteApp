@@ -11,7 +11,6 @@ class PasswordValidatorView(BackendApiMixin, View):
     """Backend view that validates POST 'password' against validator."""
 
     def post(self, request, *args, **kwargs):
-        """Handles PasswordValidatorView POST Backend response."""
 
         test_password = request.POST.get('password')
 
@@ -38,7 +37,6 @@ class UsernameAvailabilityView(RateLimitMixin, BackendApiMixin, View):
     ratelimit_rate = '1/s'
 
     def post(self, request, *args, **kwargs):
-        """Handles UsernameAvailableView POST Backend response."""
 
         test_username = request.POST.get('username')
 
@@ -64,7 +62,6 @@ class EmailAvailabilityView(RateLimitMixin, BackendApiMixin, View):
     ratelimit_rate = '1/s'
 
     def post(self, request, *args, **kwargs):
-        """Handles UsernameAvailableView POST Backend response."""
 
         test_email = request.POST.get('email')
 

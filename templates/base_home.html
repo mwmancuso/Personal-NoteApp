@@ -1,0 +1,35 @@
+{# TODO Set HTML definition #}
+{# TODO Front end localization #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}SpruceNotes{% endblock %}</title>
+    <link rel="shortcut icon" href="/favicon.ico?v=0.0.0">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/index.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    {% block extra_head %}
+
+    {% endblock %}
+</head>
+<body>
+<div id="container">
+    <div id="header">
+        <div id="logo">
+            <a href="#" title="SpruceNotes Home">SpruceNotes</a>
+        </div>
+        <div id="nav">
+            <ul id="nav_links">
+                <li><a href="#">About</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </div>
+    <div id="content">
+        {% block content %}
+            Nothing to see here.
+        {% endblock %}
+    </div>
+</div>
+</body>
+</html>

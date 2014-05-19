@@ -419,20 +419,20 @@ The development checklist is intended to be in as much order as it can be. Some 
  * - ~~Ambiguous error pages~~
  * - ~~Email system with validation~~
  * - ~~Token system for alpha and beta sign-ups~~
- * Brute force protection
+ * ~~Brute force protection~~
  * ~~Admin section~~
  * - ~~Admin 2-step (OATH)~~
  * - ~~SSL client authorization~~
  * ~~SSL (StartSSL)~~
-* **Graphical interface for accounts** [v1]
- * Session management
-* Database layout for general node system [v1]
+* ~~Barebone graphical inferface~~ [v1]
+ * ~~Session management~~
+* **Database layout for general node system** [v1]
 * Graphical interface for general node system [v1]
 * In-house module API database layout [v1]
 * In-house module API [v1]
 * Backend system [v1]
-* In-house modules (list should be established at this point) [v1]
 * Revamp graphical interface [v1]
+* In-house modules (list should be established at this point) [v1]
 * Move to DigitalOcean [v1]
 * Local email system [v1]
 * Simple transfer print-out sheets [v1]

@@ -431,6 +431,15 @@ The development checklist is intended to be in as much order as it can be. Some 
 * In-house module API database layout [v1]
 * In-house module API [v1]
 * Backend system [v1]
+* Code audit, revamping, cleaning [v1]
+ * Docstring analysis
+ * Error revamping and cleaning
+ * - UserError takes one error code, an iterable, or multiple args
+ * - Wrapper for MultipleInvalid to clean up validation code
+ * Authentication cleaning, auditing and revamping
+ * - Clean error checking after error revamping
+ * Check rest of apps and modules
+ * Check TODOs
 * Revamp graphical interface [v1]
 * In-house modules (list should be established at this point) [v1]
 * Move to DigitalOcean [v1]

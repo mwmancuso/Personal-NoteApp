@@ -426,8 +426,8 @@ The development checklist is intended to be in as much order as it can be. Some 
  * ~~SSL (StartSSL)~~
 * ~~Barebone graphical inferface~~ [v1]
  * ~~Session management~~
-* **Database layout for general node system** [v1]
-* Graphical interface for general node system [v1]
+* ~~Database layout for general node system~~ [v1]
+* **Graphical interface for general node system** [v1]
 * In-house module API database layout [v1]
 * In-house module API [v1]
 * Backend system [v1]

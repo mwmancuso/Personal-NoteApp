@@ -1,12 +1,10 @@
 Notesapp
 ========
-**This project has not been touched since *May 2014*. It was originally intended to be a self-teaching experience, but was dropped in favor of more lucrative ventures.**
+**This project has not been touched since *May 2014* (at which point I was a junior in high school). It was originally intended to be a self-teaching experience, but was dropped in favor of more lucrative ventures.**
 
 The following text is unaltered, and was perhaps a better exercise in documentation than in programming.
 
 ---
-
-The master branch of this Git project is available at https://dev.notes.xpandismo.com/.
 
 What Is It?
 -----------

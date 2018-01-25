@@ -1,6 +1,6 @@
 Notesapp
 ========
-**This project has not been touched since *May 2014*—I was a junior in high school. It was originally intended to be a self-teaching experience, but was dropped in favor of more lucrative ventures.**
+**This project, including the below documentation, has not been touched since *May 2014*—I was a junior in high school. It was originally intended to be a self-teaching experience, but was dropped in favor of more lucrative ventures.**
 
 The following text is unaltered, and was perhaps a better exercise in documentation than in programming.
 
